@@ -9,13 +9,14 @@ import '../../providers/role_selection_provider.dart';
 
 class RoleSelectButton extends ConsumerWidget {
   final String text;
-  final UserRole role;
+  final UserRole? role;
   final VoidCallback onPressed;
 
   const RoleSelectButton({
     super.key,
     required this.text,
-    required this.role,
+
+     this.role,
     required this.onPressed,
   });
 
