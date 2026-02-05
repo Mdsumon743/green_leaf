@@ -185,7 +185,7 @@ class VerificationCodeScreen extends ConsumerWidget {
 
                     // Sign Up Button
                     CustomButton(
-                      text: "Sign Up",
+                      text: "Verify",
                       onPressed: otpState.isLoading
                           ? null
                           : () {

@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:pinput/pinput.dart';
-import 'package:saunders/core/constants/icon_path.dart';
 
-import 'package:saunders/core/global/custom_button.dart';
-import 'package:saunders/core/global/custom_text.dart';
-import 'package:saunders/core/global/show_custom_dialog.dart';
-import 'package:saunders/core/utils/app_color.dart';
-
+import '../../../../core/constants/icon_path.dart';
+import '../../../../core/global/custom_button.dart';
+import '../../../../core/global/custom_text.dart';
+import '../../../../core/utils/app_color.dart';
 import '../../provider/otp_verify_provider.dart';
 
-
-class VerificationCodeScreen extends ConsumerWidget {
-  const VerificationCodeScreen({super.key});
+class ForgotPasswordOtpVerificationCodeScreen extends ConsumerWidget {
+  const ForgotPasswordOtpVerificationCodeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -187,11 +184,8 @@ class VerificationCodeScreen extends ConsumerWidget {
                       onPressed: otpState.isLoading
                           ? null
                           : () {
-                        showCustomDialog(context, imagePath: IconPath.success, title: "Account  verified Successfully", buttonText: "Done",
-                          onPressed: (){
-                          context.pop();
-                          }
-                        );
+                        context.push("/resetPasswordScreen");
+
                         /*otpNotifier.verifyOtp(
                           otpNotifier.otpController.text,
                         );*/

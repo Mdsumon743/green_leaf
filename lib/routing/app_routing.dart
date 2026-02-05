@@ -1,11 +1,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/features/authentication/presentation/screen/forgot_password_otp_verification.dart';
 import 'package:saunders/features/authentication/presentation/screen/login_screen.dart';
 import 'package:saunders/features/authentication/presentation/screen/reset_password_email_screen.dart';
 import 'package:saunders/features/authentication/presentation/screen/sign_up_screen.dart';
 import 'package:saunders/features/authentication/presentation/screen/verification_code_screen.dart';
 import 'package:saunders/features/customer_flow/home/presentation/screen/my_quote_page.dart';
 import 'package:saunders/features/customer_flow/home/presentation/widget/quote_details_screen.dart';
+import 'package:saunders/features/customer_flow/home/presentation/widget/request_inqury_page.dart';
+import 'package:saunders/features/customer_flow/invoice/presentation/screen/invoice_screen.dart';
+import 'package:saunders/features/customer_flow/navigation/presentation/screen/customer_nav_bar.dart';
+import 'package:saunders/features/customer_flow/visits/presentation/screen/visit_screen.dart';
+import 'package:saunders/features/customer_flow/visits/presentation/widget/map_view.dart';
+import 'package:saunders/features/customer_flow/visits/presentation/widget/visit_details_screen.dart';
+import 'package:saunders/features/notification/model/presentation/screen/notification_screen.dart';
 import 'package:saunders/features/onboarding/presentation/screen/customer_onboarding.dart';
 import 'package:saunders/features/onboarding/presentation/screen/role_selection_screen.dart';
 
@@ -51,6 +59,14 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/verificationCode', builder: (context, state)=>VerificationCodeScreen()),
       GoRoute(path: '/resetPassword', builder: (context, state)=>ResetPasswordEmailScreen()),
       GoRoute(path: '/resetPasswordScreen', builder: (context, state)=>ResetPasswordScreen()),
+      GoRoute(path: '/forgotPasswordOtp', builder: (context, state)=>ForgotPasswordOtpVerificationCodeScreen()),
+      GoRoute(path: '/customerNav', builder: (context, state)=>CustomerNavBar()),
+      GoRoute(path: '/visit', builder: (context, state)=>VisitScreen()),
+      GoRoute(path: '/invoice', builder: (context, state)=>InvoiceScreen()),
+      GoRoute(path: '/requestInquiry', builder: (context, state)=>RequestInquiryPage()),
+      GoRoute(path: '/notification', builder: (context, state)=>NotificationScreen()),
+      GoRoute(path: '/visitDetails', builder: (context, state)=>VisitDetailsScreen()),
+      GoRoute(path: '/mapView', builder: (context, state)=>MapView()),
     ],
   );
 });

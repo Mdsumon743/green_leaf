@@ -42,7 +42,7 @@ class ResetPasswordEmailScreen extends ConsumerWidget {
 
               /// Title
               CustomText(
-                text: AppText.resetPassword,
+                text: AppText.reset,
                 color: AppColor.authColor,
                 fontWeight: FontWeight.w700,
                 fontSize: 28.sp,
@@ -82,7 +82,7 @@ class ResetPasswordEmailScreen extends ConsumerWidget {
               CustomButton(
                 text: "Send Code",
                 onPressed:(){
-                  context.push("/resetPasswordScreen");
+                  context.push("/forgotPasswordOtp");
                 }
                 ///state.isLoading ? null : notifier.resetPassword,
               ),

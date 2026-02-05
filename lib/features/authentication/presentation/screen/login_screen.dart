@@ -10,7 +10,7 @@ import 'package:saunders/core/global/custom_text_form_field.dart';
 import 'package:saunders/core/utils/app_color.dart';
 import 'package:saunders/features/authentication/provider/sign_up_provider.dart';
 
-import '../../provider/login_provider.dart';
+
 
 class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
@@ -204,7 +204,8 @@ class LoginScreen extends ConsumerWidget {
                       onPressed: loginState.isLoading
                           ? null
                           : () {
-                        loginNotifier.login();
+                        context.push('/customerNav');
+                        /*loginNotifier.login();*/
                       },
                     ),
 

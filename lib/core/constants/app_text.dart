@@ -10,5 +10,7 @@ class AppText {
   static const String login = "Log In";
   static const String signUp = "Sign Up";
   static const String otpVerify = "Verification code";
-  static const String resetPassword = "Reset Password";
+  static const String reset = "Reset Password";
+  static const String resetPassword = "Create New Password";
+  static const String resetPasswordDescription = "Your password must be different from previous used password";
 }

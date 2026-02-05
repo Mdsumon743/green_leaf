@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/core/constants/icon_path.dart';
+import 'package:saunders/core/global/show_custom_dialog.dart';
 
 import '../../../../core/constants/app_text.dart';
 import '../../../../core/global/custom_button.dart';
@@ -61,30 +63,14 @@ class ResetPasswordScreen extends ConsumerWidget {
                     SizedBox(height: 8.h),
 
                     CustomText(
-                      text: "Create a new password",
+                      text: AppText.resetPasswordDescription,
                       fontSize: 15.sp,
                       color: AppColor.authDescriptionColor,
                     ),
 
                     SizedBox(height: 32.h),
 
-                    /// Email
-                    CustomText(
-                      text: "Email Address",
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15.sp,
-                      color: AppColor.black,
-                    ),
 
-                    SizedBox(height: 10.h),
-
-                    CustomTextFormField(
-                      controller: notifier.emailController,
-                      hintText: "Email Address",
-                      keyboardType: TextInputType.emailAddress,
-                    ),
-
-                    SizedBox(height: 20.h),
 
                     /// Password
                     CustomText(
@@ -143,8 +129,14 @@ class ResetPasswordScreen extends ConsumerWidget {
                     /// Button
                     CustomButton(
                       text: "Reset Password",
-                      onPressed:
-                      state.isLoading ? null : notifier.resetPassword,
+                      onPressed:(){
+                        showCustomDialog(context, imagePath: IconPath.success, title: 'Password Changed', buttonText: "Done",
+                        message: "Password changed succesfully, you can login again with new password", 
+                        onPressed: (){
+                          context.go("/login");
+                        });
+                      }
+                      /*state.isLoading ? null : notifier.resetPassword,*/
                     ),
 
                     SizedBox(height: 20.h),
