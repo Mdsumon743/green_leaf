@@ -9,6 +9,7 @@ import 'package:saunders/features/customer_flow/home/presentation/screen/my_quot
 import 'package:saunders/features/customer_flow/home/presentation/widget/quote_details_screen.dart';
 import 'package:saunders/features/customer_flow/home/presentation/widget/request_inqury_page.dart';
 import 'package:saunders/features/customer_flow/invoice/presentation/screen/invoice_screen.dart';
+import 'package:saunders/features/customer_flow/message/presentation/screen/chat_screen.dart';
 import 'package:saunders/features/customer_flow/navigation/presentation/screen/customer_nav_bar.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/screen/visit_screen.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/widget/map_view.dart';
@@ -67,6 +68,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/notification', builder: (context, state)=>NotificationScreen()),
       GoRoute(path: '/visitDetails', builder: (context, state)=>VisitDetailsScreen()),
       GoRoute(path: '/mapView', builder: (context, state)=>MapView()),
+      GoRoute(path: '/chat', builder: (context, state)=>ChatScreen()),
     ],
   );
 });
