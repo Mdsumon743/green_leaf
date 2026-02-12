@@ -9,5 +9,9 @@ class ImagePath {
   static const String visitBackground = "$_basePath/visit_background.png";
   static const String visitOne = "$_basePath/visit_one.png";
   static const String visitTwo = "$_basePath/visit_two.png";
+  static const String galleryOne = "$_basePath/gallery_one.png";
+  static const String galleryTwo = "$_basePath/gallery_two.png";
+  static const String galleryThree = "$_basePath/gallery_three.png";
+  static const String galleryFour = "$_basePath/gallery_four.png";
 
 }

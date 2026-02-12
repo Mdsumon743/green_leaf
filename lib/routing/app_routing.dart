@@ -9,8 +9,20 @@ import 'package:saunders/features/customer_flow/home/presentation/screen/my_quot
 import 'package:saunders/features/customer_flow/home/presentation/widget/quote_details_screen.dart';
 import 'package:saunders/features/customer_flow/home/presentation/widget/request_inqury_page.dart';
 import 'package:saunders/features/customer_flow/invoice/presentation/screen/invoice_screen.dart';
+import 'package:saunders/features/customer_flow/invoice/presentation/widget/invoice_details_screen.dart';
+import 'package:saunders/features/customer_flow/invoice/presentation/widget/payment_system.dart';
 import 'package:saunders/features/customer_flow/message/presentation/screen/chat_screen.dart';
 import 'package:saunders/features/customer_flow/navigation/presentation/screen/customer_nav_bar.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/add_address.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/address_management.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/change_password.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/edit_profile.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/gallery_screen.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/gardening_tips.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/refer_history.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/referal_screen.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/review_history.dart';
+import 'package:saunders/features/customer_flow/profile/presentation/widget/system_setting.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/screen/visit_screen.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/widget/map_view.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/widget/visit_details_screen.dart';
@@ -69,6 +81,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/visitDetails', builder: (context, state)=>VisitDetailsScreen()),
       GoRoute(path: '/mapView', builder: (context, state)=>MapView()),
       GoRoute(path: '/chat', builder: (context, state)=>ChatScreen()),
+      GoRoute(path: '/invoiceDetails', builder: (context, state)=>InvoiceDetailsScreen()),
+      GoRoute(path: '/paymentScreen', builder: (context, state)=>PaymentScreen()),
+      GoRoute(path: '/editProfile', builder: (context, state)=>EditProfile()),
+      GoRoute(path: '/address', builder: (context, state)=>AddressManagement()),
+      GoRoute(path: '/system', builder: (context, state)=>SystemSetting()),
+      GoRoute(path: '/gardening', builder: (context, state)=>GardeningTips()),
+      GoRoute(path: '/refer', builder: (context, state)=>ReferalScreen()),
+      GoRoute(path: '/review', builder: (context, state)=>ReviewHistory()),
+      GoRoute(path: '/gallery', builder: (context, state)=>GalleryScreen()),
+      GoRoute(path: '/addAddress', builder: (context, state)=>AddAddress()),
+      GoRoute(path: '/referHistory', builder: (context, state)=>ReferHistory()),
+      GoRoute(path: '/changePassword', builder: (context, state)=>ChangePasswordScreen()),
     ],
   );
 });

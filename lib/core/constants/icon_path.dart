@@ -19,5 +19,12 @@ class IconPath {
   static const String upcomingVisit = "$_basePath/upcoming_visit.svg";
   static const String myQuote = "$_basePath/my_quote.svg";
   static const String notification = "$_basePath/notification.svg";
+  static const String confirmation = "$_basePath/confirmation.png";
+  static const String deleteConfirmation = "$_basePath/delete_confirmation.png";
+  static const String location = "$_basePath/location.png";
+  static const String refer = "$_basePath/refer.png";
+  static const String whatsApp = "$_basePath/whatsapp.png";
+  static const String email = "$_basePath/email.png";
+  static const String link = "$_basePath/link.png";
 
 }

@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -10,8 +12,8 @@ import '../widget/invoice_card.dart';
 import '../widget/tab_item.dart';
 import '../widget/total_due_card.dart';
 
-class InvoiceScreen extends ConsumerWidget {
-  const InvoiceScreen({super.key});
+class PaymentScreen extends ConsumerWidget {
+  const PaymentScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

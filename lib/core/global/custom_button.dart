@@ -87,14 +87,14 @@ class _CustomButtonState extends State<CustomButton>
         LinearGradient(
           colors: [
             (widget.backgroundColor ?? AppColor.primary)
-                .withOpacity(effectiveOpacity),
+                .withValues(alpha: effectiveOpacity),
             (widget.backgroundColor ?? AppColor.primary)
-                .withOpacity(effectiveOpacity * 0.4),
+                .withValues(alpha: effectiveOpacity * 0.4),
           ],
         );
 
     final effectiveTextColor =
-    isDisabled ? widget.textColor.withOpacity(0.6) : widget.textColor;
+    isDisabled ? widget.textColor.withValues(alpha: 0.6) : widget.textColor;
 
     /// Button content (text + optional suffix icon)
     final buttonContent = widget.isCircle
