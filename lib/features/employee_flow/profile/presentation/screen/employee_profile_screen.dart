@@ -1,3 +1,5 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -6,8 +8,8 @@ import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/show_custom_dialog.dart';
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+class EmployeeProfileScreen extends StatelessWidget {
+  const EmployeeProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -128,39 +130,33 @@ class ProfileScreen extends StatelessWidget {
                             ),
                             _buildMenuItem(
                               icon: Icons.location_on_outlined,
-                              title: 'Address Management',
+                              title: 'Address',
                               onTap: () {
                                 context.push("/address");
                               },
                             ),
                             _buildMenuItem(
                               icon: Icons.location_on_outlined,
-                              title: 'Subscription',
+                              title: 'Recurring Job',
                               onTap: () {
-                                context.push("/subscription");
+                                context.push("/recurringJob");
                               },
                             ),
                             _buildMenuItem(
                               icon: Icons.settings_outlined,
-                              title: 'Account Settings',
+                              title: ' Settings',
                               onTap: () {
                                 context.push("/system");
                               },
                             ),
                             _buildMenuItem(
                               icon: Icons.spa_outlined,
-                              title: 'Gardening Tips',
+                              title: 'Trusted local trades',
                               onTap: () {
-                                context.push("/gardening");
+                                context.push("/localTrade");
                               },
                             ),
-                            _buildMenuItem(
-                              icon: Icons.person_add_outlined,
-                              title: 'Refer a friend',
-                              onTap: () {
-                                context.push("/refer");
-                              },
-                            ),
+
                             _buildMenuItem(
                               icon: Icons.star_outline,
                               title: 'Reviews History',
@@ -183,12 +179,12 @@ class ProfileScreen extends StatelessWidget {
                               isLogout: true,
                               onTap: () {
                                 showCustomDialog(context, imagePath: IconPath.confirmation, title: "Are You Sure?", buttonText: "cancel",
-                                isDoubleButton: true, secondButtonText: "Logout", onPressed: (){
-                                  context.pop();
+                                    isDoubleButton: true, secondButtonText: "Logout", onPressed: (){
+                                      context.pop();
                                     },
-                                onSecondPressed: (){
-                                  context.push('/login');
-                                }, message: "Do you want to log out?");
+                                    onSecondPressed: (){
+                                      context.push('/login');
+                                    }, message: "Do you want to log out?");
                               },
                             ),
                           ],

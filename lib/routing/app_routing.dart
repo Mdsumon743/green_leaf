@@ -5,6 +5,7 @@ import 'package:saunders/features/authentication/presentation/screen/login_scree
 import 'package:saunders/features/authentication/presentation/screen/reset_password_email_screen.dart';
 import 'package:saunders/features/authentication/presentation/screen/sign_up_screen.dart';
 import 'package:saunders/features/authentication/presentation/screen/verification_code_screen.dart';
+import 'package:saunders/features/customer_flow/home/presentation/screen/all_service_screen.dart';
 import 'package:saunders/features/customer_flow/home/presentation/screen/my_quote_page.dart';
 import 'package:saunders/features/customer_flow/home/presentation/widget/quote_details_screen.dart';
 import 'package:saunders/features/customer_flow/home/presentation/widget/request_inqury_page.dart';
@@ -26,11 +27,25 @@ import 'package:saunders/features/customer_flow/profile/presentation/widget/syst
 import 'package:saunders/features/customer_flow/visits/presentation/screen/visit_screen.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/widget/map_view.dart';
 import 'package:saunders/features/customer_flow/visits/presentation/widget/visit_details_screen.dart';
+import 'package:saunders/features/employee_flow/authentication/employee_login.dart';
+import 'package:saunders/features/employee_flow/authentication/employee_sign_up.dart';
+import 'package:saunders/features/employee_flow/authentication/employee_verification_screen.dart';
+import 'package:saunders/features/employee_flow/authentication/profile_set_up_screen.dart';
+import 'package:saunders/features/employee_flow/home/model/service_data_model.dart';
+import 'package:saunders/features/employee_flow/navigation/employee_navigation.dart';
+import 'package:saunders/features/employee_flow/profile/presentation/widget/create_recuring_job_screen.dart';
+import 'package:saunders/features/employee_flow/profile/presentation/widget/recurring_job_details_screen.dart';
+import 'package:saunders/features/employee_flow/profile/presentation/widget/recurring_job_screen.dart';
+import 'package:saunders/features/employee_flow/profile/presentation/widget/subscription_screen.dart';
+import 'package:saunders/features/employee_flow/profile/presentation/widget/trusted_local_trades.dart';
 import 'package:saunders/features/notification/model/presentation/screen/notification_screen.dart';
 import 'package:saunders/features/onboarding/presentation/screen/customer_onboarding.dart';
+import 'package:saunders/features/onboarding/presentation/screen/employee_onboarding.dart';
 import 'package:saunders/features/onboarding/presentation/screen/role_selection_screen.dart';
 
 import '../features/authentication/presentation/screen/reset_password_screen.dart';
+import '../features/customer_flow/home/presentation/widget/service_details_screen.dart';
+import '../features/employee_flow/authentication/allow_location_access.dart';
 import '../features/splash/presentation/screen/splash_screen.dart';
 
 import '../features/splash/provider/splash_state_provider.dart';
@@ -93,6 +108,33 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/addAddress', builder: (context, state)=>AddAddress()),
       GoRoute(path: '/referHistory', builder: (context, state)=>ReferHistory()),
       GoRoute(path: '/changePassword', builder: (context, state)=>ChangePasswordScreen()),
+      GoRoute(path: '/allServices', builder: (context, state)=>AllServicesScreen()),
+      GoRoute(
+        path: '/serviceDetail',
+        builder: (context, state) => ServiceDetailsScreen(
+          service: state.extra as ServiceModel,
+        ),
+      ),
+
+
+      /// employee Flow
+      GoRoute(path: "/employeeOnBoarding", builder: (context, state)=>EmployeeOnboarding()),
+      GoRoute(path: "/employeeLogIn", builder: (context, state)=>EmployeeLoginScreen()),
+      GoRoute(path: "/employeeSignUp", builder: (context, state)=>EmployeeSignUpScreen()),
+      GoRoute(path: "/employeeVerification", builder: (context, state)=>EmployeeVerificationCodeScreen()),
+      GoRoute(path: "/allowLocation", builder: (context, state)=>AllowAccessScreen()),
+      GoRoute(path: "/profileSetUp", builder: (context, state)=>ProfileSetUpScreen()),
+      GoRoute(path: "/employeeNavigation", builder: (context, state)=>EmployeeNavigation()),
+      GoRoute(path: "/subscription", builder: (context, state)=>SubscriptionScreen()),
+      GoRoute(path: "/localTrade", builder: (context, state)=>TrustedLocalTrades()),
+      GoRoute(path: "/recurringJob", builder: (context, state)=>RecurringJobScreen()),
+      GoRoute(path: "/addRecurringJob", builder: (context, state)=>CreateRecurringJobScreen()),
+      GoRoute(
+        path: '/recurringJobDetails',
+        builder: (context, state) => RecurringJobDetailsScreen(
+          job: state.extra as RecurringJobDetailsModel,
+        ),
+      ),
     ],
   );
 });

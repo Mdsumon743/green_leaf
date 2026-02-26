@@ -2,6 +2,7 @@
 class IconPath {
   static const String _basePath = "assets/icons";
   static const String appLogo = "$_basePath/app_logo.png";
+  static const String greenLogo = "$_basePath/green_logo.png";
   static const String success = "$_basePath/Success.png";
   static const String google = "$_basePath/google.png";
   static const String apple = "$_basePath/apple.png";
@@ -26,5 +27,7 @@ class IconPath {
   static const String whatsApp = "$_basePath/whatsapp.png";
   static const String email = "$_basePath/email.png";
   static const String link = "$_basePath/link.png";
+  static const String package = "$_basePath/package.svg";
+  static const String activePackage = "$_basePath/package_active.svg";
 
 }

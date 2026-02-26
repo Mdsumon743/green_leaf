@@ -119,38 +119,62 @@ class MyQuotePage extends ConsumerWidget {
                     },
                   ),
                 ),
+                SizedBox(height: 10.h,),
 
                 // Awaiting Approval Button at the bottom
-                Container(
-                  margin: EdgeInsets.only(left: 200.w,  right: 20.w),
-                  child: SizedBox(
-                    width: double.infinity,
-                    height: 48.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Handle awaiting approval action
-                        // Navigate to approval page or show pending quotes
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF66BB6A),
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: Text(
-                        'Awaiting Approval',
-                        style: TextStyle(
-                          fontSize: 15.sp,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 0.3,
-                        ),
+      Container(
+        margin: EdgeInsets.only(left: 200.w, right: 20.w),
+        child: SizedBox(
+          height: 48.h,
+          child: Container(
+            padding: EdgeInsets.all(2), // Border thickness (2px)
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              gradient: const LinearGradient(
+                colors: [
+                  Color(0xFF9DC167), // Border gradient start
+                  Color(0xFF348317), // Border gradient end
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6.r), // 8 - 2 padding
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF126A19), // Background gradient start
+                    Color(0xFF8CC40F), // Background gradient end
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(6.r),
+                  onTap: () {
+                    // Handle awaiting approval action
+                  },
+                  child: Center(
+                    child: Text(
+                      'Awaiting Approval',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.sp,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.3,
                       ),
                     ),
                   ),
                 ),
+              ),
+            ),
+          ),
+        ),
+      )
               ],
             ),
           ),

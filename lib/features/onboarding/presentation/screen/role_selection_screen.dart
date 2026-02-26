@@ -64,7 +64,10 @@ class RoleSelectionScreen extends ConsumerWidget {
                     RoleSelectButton(
                       text: "Continue as an Employee",
                       role: UserRole.employee,
-                      onPressed: (){},
+                      onPressed: (){
+                        ref.read(selectedRoleProvider.notifier).state = UserRole.employee;
+                        context.go("/employeeOnBoarding");
+                      },
                     ),
 
 

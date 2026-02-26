@@ -13,5 +13,12 @@ class ImagePath {
   static const String galleryTwo = "$_basePath/gallery_two.png";
   static const String galleryThree = "$_basePath/gallery_three.png";
   static const String galleryFour = "$_basePath/gallery_four.png";
+  static const String localOne = "$_basePath/local_one.png";
+  static const String localTwo = "$_basePath/local_two.png";
+  static const String localThree = "$_basePath/local_three.png";
+  static const String localFour = "$_basePath/local_four.png";
+  static const String subscriptionOne = "$_basePath/subscription_one.png";
+  static const String subscriptionTwo = "$_basePath/subscription_two.png";
+  static const String subscriptionThree = "$_basePath/subscription_three.png";
 
 }

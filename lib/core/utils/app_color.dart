@@ -19,5 +19,6 @@ class AppColor {
   static const Color profileTextColor = Color(0xFF757575);
   static const Color socialLogoColor = Color(0xFF126A19);
   static const Color containerBorder = Color(0xFFD8DBDF);
+  static const Color grey= Color(0xFF898989);
 
 }
