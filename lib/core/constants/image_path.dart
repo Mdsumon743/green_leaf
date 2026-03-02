@@ -20,5 +20,7 @@ class ImagePath {
   static const String subscriptionOne = "$_basePath/subscription_one.png";
   static const String subscriptionTwo = "$_basePath/subscription_two.png";
   static const String subscriptionThree = "$_basePath/subscription_three.png";
+  static const String gardening = "$_basePath/gardening_one.png";
+  static const String house = "$_basePath/house.png";
 
 }

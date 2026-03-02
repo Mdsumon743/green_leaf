@@ -31,7 +31,7 @@ import 'package:saunders/features/employee_flow/authentication/employee_login.da
 import 'package:saunders/features/employee_flow/authentication/employee_sign_up.dart';
 import 'package:saunders/features/employee_flow/authentication/employee_verification_screen.dart';
 import 'package:saunders/features/employee_flow/authentication/profile_set_up_screen.dart';
-import 'package:saunders/features/employee_flow/home/model/service_data_model.dart';
+
 import 'package:saunders/features/employee_flow/navigation/employee_navigation.dart';
 import 'package:saunders/features/employee_flow/profile/presentation/widget/create_recuring_job_screen.dart';
 import 'package:saunders/features/employee_flow/profile/presentation/widget/recurring_job_details_screen.dart';
@@ -44,6 +44,7 @@ import 'package:saunders/features/onboarding/presentation/screen/employee_onboar
 import 'package:saunders/features/onboarding/presentation/screen/role_selection_screen.dart';
 
 import '../features/authentication/presentation/screen/reset_password_screen.dart';
+import '../features/customer_flow/home/model/service_model.dart';
 import '../features/customer_flow/home/presentation/widget/service_details_screen.dart';
 import '../features/employee_flow/authentication/allow_location_access.dart';
 import '../features/splash/presentation/screen/splash_screen.dart';
@@ -91,7 +92,7 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/customerNav', builder: (context, state)=>CustomerNavBar()),
       GoRoute(path: '/visit', builder: (context, state)=>VisitScreen()),
       GoRoute(path: '/invoice', builder: (context, state)=>InvoiceScreen()),
-      GoRoute(path: '/requestInquiry', builder: (context, state)=>RequestInquiryPage()),
+      GoRoute(path: '/requestInquiry', builder: (context, state)=>RequestQuotePage()),
       GoRoute(path: '/notification', builder: (context, state)=>NotificationScreen()),
       GoRoute(path: '/visitDetails', builder: (context, state)=>VisitDetailsScreen()),
       GoRoute(path: '/mapView', builder: (context, state)=>MapView()),

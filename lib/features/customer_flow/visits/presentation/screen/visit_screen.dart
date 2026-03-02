@@ -10,7 +10,6 @@ class VisitScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sample data for visits
     final List<Map<String, dynamic>> visits = [
       {
         'image': ImagePath.visitOne,
@@ -41,134 +40,103 @@ class VisitScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          /// ================= Background Images =================
-          Column(
-            children: [
-              /// Top Background
-              Container(
-                height: 200.h,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(ImagePath.visitBackground),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                  ),
-                ),
-              ),
-              /// Bottom Background
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(ImagePath.homeBackground),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-
-          /// ================= Overlay =================
-          Column(
-            children: [
-              Container(
-                height: 200.h,
-                color: AppColor.primary.withValues(alpha: 0.7),
-              ),
-              Expanded(
-                child: Container(
-                  color: Colors.white.withValues(alpha: 0.95),
-                ),
-              ),
-            ],
-          ),
-
-          /// ================= Content =================
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                /// ================= Header =================
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: Container(
-                          padding: EdgeInsets.all(8.r),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.arrow_back,
-                            color: Colors.white,
-                            size: 20.sp,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 16.w),
-                      CustomText(
-                        text: "Upcoming Visits",
-                        color: Colors.white,
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 80.h),
-
-                /// ================= Visit List =================
-                Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(28.r),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: visits.length,
-                        itemBuilder: (context, index) {
-                          final visit = visits[index];
-                          return GestureDetector(
-                            onTap: (){
-                              context.push('/visitDetails');
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(bottom: 16.h),
-                              child: _visitCard(
-                                image: visit['image'],
-                                title: visit['title'],
-                                date: visit['date'],
-                                worker: visit['worker'],
-                                reminder: visit['reminder'],
-                                status: visit['status'],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+          // ── Full-screen background image ───────────────────────────────
+          Positioned.fill(
+            child: Image.asset(
+              ImagePath.quoteBackground,
+              fit: BoxFit.cover,
             ),
+          ),
+
+          // ── Main column ────────────────────────────────────────────────
+          Column(
+            children: [
+              // ── Header ─────────────────────────────────────────────────
+              Container(
+                padding: EdgeInsets.only(
+                  top: 50.h,
+                  left: 20.w,
+                  right: 20.w,
+                  bottom: 20.h,
+                ),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 24.sp,
+                      ),
+                    ),
+                    SizedBox(width: 70.w),
+                    CustomText(
+                      text: 'Upcoming Visits',
+                      color: Colors.white,
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── White gradient sheet ────────────────────────────────────
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.white.withValues(alpha: 0.95),
+                        Colors.white.withValues(alpha: 0.7),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.5, 0.8, 1.0],
+                    ),
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50.r),
+                      topRight: Radius.circular(50.r),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50.r),
+                      topRight: Radius.circular(50.r),
+                    ),
+                    child: ListView.builder(
+                      padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 40.h),
+                      itemCount: visits.length,
+                      itemBuilder: (context, index) {
+                        final visit = visits[index];
+                        return GestureDetector(
+                          onTap: () => context.push('/visitDetails'),
+                          child: Container(
+                            margin: EdgeInsets.only(bottom: 16.h),
+                            child: _visitCard(
+                              image: visit['image'],
+                              title: visit['title'],
+                              date: visit['date'],
+                              worker: visit['worker'],
+                              reminder: visit['reminder'],
+                              status: visit['status'],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  /// ================= Visit Card Widget =================
   Widget _visitCard({
     required String image,
     required String title,
@@ -197,7 +165,7 @@ class VisitScreen extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          /// ================= Visit Image =================
+          // ── Visit Image ───────────────────────────────────────────────
           ClipRRect(
             borderRadius: BorderRadius.circular(8.r),
             child: Image.asset(
@@ -210,12 +178,11 @@ class VisitScreen extends StatelessWidget {
 
           SizedBox(width: 12.w),
 
-          /// ================= Visit Details =================
+          // ── Visit Details ─────────────────────────────────────────────
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// Title
                 CustomText(
                   text: title,
                   fontSize: 16.sp,
@@ -223,8 +190,6 @@ class VisitScreen extends StatelessWidget {
                   color: AppColor.textBody,
                 ),
                 SizedBox(height: 4.h),
-
-                /// Date
                 CustomText(
                   text: date,
                   fontSize: 12.sp,
@@ -232,8 +197,6 @@ class VisitScreen extends StatelessWidget {
                   color: AppColor.textBody.withValues(alpha: 0.6),
                 ),
                 SizedBox(height: 8.h),
-
-                /// Assigned Worker Label
                 CustomText(
                   text: "Assigned Worker",
                   fontSize: 11.sp,
@@ -241,8 +204,6 @@ class VisitScreen extends StatelessWidget {
                   color: AppColor.textBody.withValues(alpha: 0.5),
                 ),
                 SizedBox(height: 2.h),
-
-                /// Worker Name
                 CustomText(
                   text: worker,
                   fontSize: 13.sp,
@@ -250,11 +211,10 @@ class VisitScreen extends StatelessWidget {
                   color: AppColor.textBody,
                 ),
                 SizedBox(height: 8.h),
-
-                /// Reminder or Status
                 if (reminder != null && reminder.isNotEmpty)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: AppColor.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4.r),
@@ -266,10 +226,10 @@ class VisitScreen extends StatelessWidget {
                       color: AppColor.textBody,
                     ),
                   ),
-
                 if (status != null && status.isNotEmpty)
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 8.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: AppColor.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(4.r),

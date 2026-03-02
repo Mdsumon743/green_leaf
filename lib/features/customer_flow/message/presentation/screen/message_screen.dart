@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -6,14 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/custom_text_form_field.dart';
-import 'package:saunders/core/utils/app_color.dart';
+
 
 import '../../model/message_data_model.dart';
 import '../widget/message_item.dart';
 
 // -------------------- Providers --------------------
 
-// Messages state
 final messagesProvider = StateProvider<List<Message>>((ref) {
   return [
     Message(
@@ -51,10 +49,8 @@ final messagesProvider = StateProvider<List<Message>>((ref) {
   ];
 });
 
-// Search query
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
-// Filtered messages
 final filteredMessagesProvider = Provider<List<Message>>((ref) {
   final messages = ref.watch(messagesProvider);
   final query = ref.watch(searchQueryProvider);
@@ -62,7 +58,7 @@ final filteredMessagesProvider = Provider<List<Message>>((ref) {
   if (query.isEmpty) return messages;
 
   return messages
-      .where((message) => message.name.toLowerCase().contains(query.toLowerCase()))
+      .where((m) => m.name.toLowerCase().contains(query.toLowerCase()))
       .toList();
 });
 
@@ -76,120 +72,107 @@ class MessageScreen extends ConsumerWidget {
     final filteredMessages = ref.watch(filteredMessagesProvider);
 
     return Scaffold(
-      backgroundColor: AppColor.background,
       body: Stack(
         children: [
-          // ---------------- Top Background ----------------
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(24.r),
-                bottomRight: Radius.circular(24.r),
-              ),
-              child: Opacity(
-                opacity: 0.5,
-                child: Image.asset(
-                  ImagePath.visitBackground,
-                  width: double.infinity,
-                  height: 220.h,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-
-          // Optional overlay image
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Opacity(
-              opacity: 0.5,
-              child: Image.asset(
-                ImagePath.quoteBackground,
-                width: 140.w,
-                height: 180.h,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-
-          // ---------------- Bottom Background ----------------
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
+          // ── Full-screen background image ─────────────────────────────
+          Positioned.fill(
             child: Image.asset(
-              ImagePath.homeBackground,
-              width: double.infinity,
-              height: 180.h,
+              ImagePath.quoteBackground,
               fit: BoxFit.cover,
             ),
           ),
 
-          // ---------------- Main Content ----------------
-          SafeArea(
-            child: Column(
-              children: [
-                // Header
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+          // ── Main column ──────────────────────────────────────────────
+          Column(
+            children: [
+              // ── Header ───────────────────────────────────────────────
+              Container(
+                padding: EdgeInsets.only(
+                  top: 50.h,
+                  left: 20.w,
+                  right: 20.w,
+                  bottom: 20.h,
+                ),
+                child: Center(
                   child: CustomText(
-                    text: "Message",
+                    text: 'Message',
                     fontSize: 20.sp,
                     fontWeight: FontWeight.w600,
-                    color: AppColor.white,
+                    color: Colors.white,
                   ),
                 ),
+              ),
 
-                // Search bar
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: CustomTextFormField(
-                    borderRadius: 16.r,
-                    controller: TextEditingController(),
-                    hintText: "Search...",
-                    prefixIcon: Icon(Icons.search, color: Colors.grey),
-                    onChanged: (value) {
-                      ref.read(searchQueryProvider.notifier).state = value;
-                    },
-                  ),
-                ),
-
-                SizedBox(height: 16.h),
-
-                // Messages list container
-                Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColor.background,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(24.r),
-                        topRight: Radius.circular(24.r),
-                      ),
+              // ── White gradient sheet ──────────────────────────────────
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white,
+                        Colors.white.withValues(alpha: 0.95),
+                        Colors.white.withValues(alpha: 0.7),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.5, 0.8, 1.0],
                     ),
-                    child: ListView.separated(
-                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
-                      itemCount: filteredMessages.length,
-                      separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                      itemBuilder: (context, index) {
-                        final message = filteredMessages[index];
-                        return MessageItem(message: message);
-                      },
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50.r),
+                      topRight: Radius.circular(50.r),
                     ),
                   ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(50.r),
+                      topRight: Radius.circular(50.r),
+                    ),
+                    child: Column(
+                      children: [
+                        // ── Search bar ────────────────────────────────
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 0),
+                          child: CustomTextFormField(
+                            borderRadius: 16.r,
+                            controller: TextEditingController(),
+                            hintText: "Search...",
+                            prefixIcon:
+                            Icon(Icons.search, color: Colors.grey),
+                            onChanged: (value) {
+                              ref
+                                  .read(searchQueryProvider.notifier)
+                                  .state = value;
+                            },
+                          ),
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        // ── Messages list ─────────────────────────────
+                        Expanded(
+                          child: ListView.separated(
+                            padding: EdgeInsets.fromLTRB(
+                                20.w, 0, 20.w, 40.h),
+                            itemCount: filteredMessages.length,
+                            separatorBuilder: (_, __) =>
+                                SizedBox(height: 12.h),
+                            itemBuilder: (context, index) {
+                              final message = filteredMessages[index];
+                              return MessageItem(message: message);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 }
-
-
-
-

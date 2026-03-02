@@ -132,12 +132,7 @@ const List<String> _customers = [
   'Liam Johnson',
 ];
 
-const List<String> _staffList = [
-  'Darrell Steward',
-  'Michael Scott',
-  'Sarah Connor',
-  'John Doe',
-];
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SCREEN
