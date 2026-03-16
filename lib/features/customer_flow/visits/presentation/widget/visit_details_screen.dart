@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/show_custom_dialog.dart';
 import 'package:saunders/core/utils/app_color.dart';
@@ -59,32 +60,25 @@ class VisitDetailsScreen extends StatelessWidget {
 
               // ── White gradient sheet ──────────────────────────────────
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withValues(alpha: 0.95),
-                        Colors.white.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.5, 0.8, 1.0],
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color(0xFFEDFFE8),
+                          Colors.white.withValues(alpha: 0.95),
+                          Colors.white.withValues(alpha: 0.7),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 0.8, 1.0],
+                      ),
                     ),
                     child: SingleChildScrollView(
-                      padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 40.h),
+                      padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 40.h),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -93,17 +87,15 @@ class VisitDetailsScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 Container(
-                                  padding: EdgeInsets.all(16.r),
+                                  padding: EdgeInsets.all(10.r),
                                   decoration: BoxDecoration(
-                                    color: AppColor.primary
-                                        .withValues(alpha: 0.15),
-                                    shape: BoxShape.circle,
+                                    color: Color(0xFF36B840)
+                                        .withValues(alpha: 0.20),
+                                    shape: BoxShape.rectangle,
+                                    borderRadius: BorderRadius.circular(5.r),
+                                    border: Border.all(color: Color(0xFF36B840).withValues(alpha: 0.30),width: 0.5.w)
                                   ),
-                                  child: Icon(
-                                    Icons.description_outlined,
-                                    color: AppColor.primary,
-                                    size: 32.sp,
-                                  ),
+                                  child: Image.asset(IconPath.appointment02,height: 20.h,width: 20.w,)
                                 ),
                                 SizedBox(height: 12.h),
                                 CustomText(
@@ -229,43 +221,60 @@ class VisitDetailsScreen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             height: 52.h,
-                            child: ElevatedButton(
-                              onPressed: () {
+                            child: GestureDetector(
+                              onTap: () {
                                 showCustomDialog(
                                   context,
-                                  imagePath: IconPath.success,
+                                  imagePath: IconPath.success2,
                                   title: "Job Successfully Completed",
                                   buttonText: "Done",
-                                  message:
-                                  "The service is complete. Thank you for choosing us!",
+                                  buttonGradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                    end: Alignment.bottomCenter,
+                                    colors: [
+                                      Color(0xFF8CC40F),
+                                      Color(0xFF126A19),
+                                    ]
+                                  ),
+                                  message: "The service is complete. Thank you for choosing us!",
                                   onPressed: () => context.pop(),
                                 );
                               },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColor.primary,
-                                shape: RoundedRectangleBorder(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 16.h),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors:[
+                                        Color(0xFF8CC40F),
+                                        Color(0xFF126A19),
+                                      ]
+                                  ),
                                   borderRadius: BorderRadius.circular(10.r),
+                                  border: Border.all(
+                                    color: Color(0xFF9DC167)
+                                  )
                                 ),
-                                elevation: 0,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomText(
+                                      text: "Job Complete",
+                                      color: Colors.white,
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                      size: 20.sp,
+                                    ),
+                                  ],
+                                ),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomText(
-                                    text: "Job Complete",
-                                    color: Colors.white,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.white,
-                                    size: 16.sp,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            )
                           ),
                         ],
                       ),

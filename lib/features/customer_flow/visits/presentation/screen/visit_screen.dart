@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/utils/app_color.dart';
+import 'package:saunders/features/customer_flow/visits/presentation/widget/visite_card.dart';
+
+import '../widget/filter_widget.dart';
 
 class VisitScreen extends StatelessWidget {
   const VisitScreen({super.key});
@@ -15,25 +19,28 @@ class VisitScreen extends StatelessWidget {
         'image': ImagePath.visitOne,
         'title': 'Garden Maintenance',
         'date': 'Friday, 16th July, 10:00AM',
+        'address' : '123 Greenview St. Springfield, IL',
         'worker': 'Shamim Islam',
         'reminder': 'We\'ll see you soon!',
-        'status': '',
+        'status': 'Pending',
       },
       {
         'image': ImagePath.visitTwo,
         'title': 'Hedge Trimming',
         'date': 'Friday, 16th July, 10:00AM',
+        'address' : '123 Greenview St. Springfield, IL',
         'worker': 'Shamim Islam',
         'reminder': '',
-        'status': 'Appointment Confirmed',
+        'status': 'Pending',
       },
       {
         'image': ImagePath.visitTwo,
         'title': 'Hedge Trimming',
         'date': 'Friday, 16th July, 10:00AM',
+        'address' : '123 Greenview St. Springfield, IL',
         'worker': 'Shamim Islam',
         'reminder': '',
-        'status': '',
+        'status': 'Pending ',
       },
     ];
 
@@ -82,50 +89,46 @@ class VisitScreen extends StatelessWidget {
 
               // ── White gradient sheet ────────────────────────────────────
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withValues(alpha: 0.95),
-                        Colors.white.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.5, 0.8, 1.0],
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF3FFF0), // The light background color from your image
                     ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
-                    ),
-                    child: ListView.builder(
-                      padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 40.h),
-                      itemCount: visits.length,
-                      itemBuilder: (context, index) {
-                        final visit = visits[index];
-                        return GestureDetector(
-                          onTap: () => context.push('/visitDetails'),
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: 16.h),
-                            child: _visitCard(
-                              image: visit['image'],
-                              title: visit['title'],
-                              date: visit['date'],
-                              worker: visit['worker'],
-                              reminder: visit['reminder'],
-                              status: visit['status'],
-                            ),
+                    child: Column(
+                      children: [
+                        // 1. Add the FilterWidget here, inside the clipped area
+                        // Padding top (e.g., 50.h to 60.h) is CRITICAL to push it below the curve dip
+                        Padding(
+                          padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 10.h),
+                          child: FilterWidget(),
+                        ),
+
+                        // 2. The List of Cards
+                        Expanded(
+                          child: ListView.builder(
+                            // Remove top padding here since FilterWidget handles it
+                            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 40.h),
+                            itemCount: visits.length,
+                            itemBuilder: (context, index) {
+                              final visit = visits[index];
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: 16.h),
+                                child: VisiteCard(
+                                  image: visit['image'],
+                                  title: visit['title'],
+                                  address: visit['address'],
+                                  date: visit['date'],
+                                  worker: visit['worker'],
+                                  reminder: visit['reminder'],
+                                  status: visit['status'],
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -136,116 +139,5 @@ class VisitScreen extends StatelessWidget {
       ),
     );
   }
-
-  Widget _visitCard({
-    required String image,
-    required String title,
-    required String date,
-    required String worker,
-    String? reminder,
-    String? status,
-  }) {
-    return Container(
-      padding: EdgeInsets.all(12.r),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(
-          color: AppColor.containerBorder,
-          width: 1.w,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Visit Image ───────────────────────────────────────────────
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.r),
-            child: Image.asset(
-              image,
-              width: 80.w,
-              height: 130.h,
-              fit: BoxFit.cover,
-            ),
-          ),
-
-          SizedBox(width: 12.w),
-
-          // ── Visit Details ─────────────────────────────────────────────
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CustomText(
-                  text: title,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
-                  color: AppColor.textBody,
-                ),
-                SizedBox(height: 4.h),
-                CustomText(
-                  text: date,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w400,
-                  color: AppColor.textBody.withValues(alpha: 0.6),
-                ),
-                SizedBox(height: 8.h),
-                CustomText(
-                  text: "Assigned Worker",
-                  fontSize: 11.sp,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.textBody.withValues(alpha: 0.5),
-                ),
-                SizedBox(height: 2.h),
-                CustomText(
-                  text: worker,
-                  fontSize: 13.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColor.textBody,
-                ),
-                SizedBox(height: 8.h),
-                if (reminder != null && reminder.isNotEmpty)
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 8.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: AppColor.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    child: CustomText(
-                      text: reminder,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.textBody,
-                    ),
-                  ),
-                if (status != null && status.isNotEmpty)
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 8.w, vertical: 4.h),
-                    decoration: BoxDecoration(
-                      color: AppColor.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    child: CustomText(
-                      text: status,
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w500,
-                      color: AppColor.textBody,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
+

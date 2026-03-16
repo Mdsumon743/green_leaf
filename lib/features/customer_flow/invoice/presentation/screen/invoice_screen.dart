@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 
 
@@ -212,42 +213,45 @@ class InvoiceScreen extends ConsumerWidget {
 
               // ── White rounded sheet ──────────────────────────────────
               Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: _C.scaffoldBg,
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
-                  ),
-                  child: Column(
-                    children: [
-                      // ── Total Balance card ───────────────────────────
-                      Container(
-                        margin: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 0),
-                        child: _TotalBalanceCard(),
-                      ),
-
-                      SizedBox(height: 16.h),
-
-                      // ── Tabs ─────────────────────────────────────────
-                      Container(
-                        margin: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: _TabBar(selectedTab: selectedTab, ref: ref),
-                      ),
-
-                      SizedBox(height: 14.h),
-
-                      // ── Invoice list ─────────────────────────────────
-                      Expanded(
-                        child: filteredInvoices.isEmpty
-                            ? _EmptyState()
-                            : ListView.separated(
-                          padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 40.h),
-                          itemCount: filteredInvoices.length,
-                          separatorBuilder: (_, __) => SizedBox(height: 10.h),
-                          itemBuilder: (_, i) =>
-                              _InvoiceCard(invoice: filteredInvoices[i]),
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: _C.scaffoldBg,
+                      borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+                    ),
+                    child: Column(
+                      children: [
+                        // ── Total Balance card ───────────────────────────
+                        Container(
+                          margin: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 0),
+                          child: _TotalBalanceCard(),
                         ),
-                      ),
-                    ],
+
+                        SizedBox(height: 16.h),
+
+                        // ── Tabs ─────────────────────────────────────────
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: _TabBar(selectedTab: selectedTab, ref: ref),
+                        ),
+
+                        SizedBox(height: 14.h),
+
+                        // ── Invoice list ─────────────────────────────────
+                        Expanded(
+                          child: filteredInvoices.isEmpty
+                              ? _EmptyState()
+                              : ListView.separated(
+                            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 40.h),
+                            itemCount: filteredInvoices.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 10.h),
+                            itemBuilder: (_, i) =>
+                                _InvoiceCard(invoice: filteredInvoices[i]),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -517,7 +521,7 @@ class _InvoiceCard extends StatelessWidget {
 
                 // View Details
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => context.push("/invoiceDetails"),
                   child: Row(
                     children: [
                       CustomText(

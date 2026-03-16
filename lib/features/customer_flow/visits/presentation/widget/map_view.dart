@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/utils/app_color.dart';
 
@@ -110,29 +111,19 @@ class _MapViewState extends State<MapView> {
 
                 /// ================= Content Card =================
                 Expanded(
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(28.r),
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        /// ================= Google Map =================
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.r),
-                              border: Border.all(
-                                color: AppColor.containerBorder,
-                                width: 1.w,
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16.r),
+                      child: Column(
+                        children: [
+                          /// ================= Google Map =================
+                          Expanded(
+                            child: Container(
+                              margin: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
                               child: GoogleMap(
                                 onMapCreated: _onMapCreated,
                                 initialCameraPosition: CameraPosition(
@@ -154,101 +145,101 @@ class _MapViewState extends State<MapView> {
                               ),
                             ),
                           ),
-                        ),
 
-                        /// ================= Business Info Card =================
-                        Container(
-                          margin: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
-                          padding: EdgeInsets.all(16.r),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16.r),
-                            border: Border.all(
-                              color: AppColor.containerBorder,
-                              width: 1.w,
+                          /// ================= Business Info Card =================
+                          Container(
+                            margin: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+                            padding: EdgeInsets.all(16.r),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16.r),
+                              border: Border.all(
+                                color: AppColor.containerBorder,
+                                width: 1.w,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
                             ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              /// Business Name
-                              CustomText(
-                                text: "Saunders Gradening Service",
-                                fontSize: 18.sp,
-                                fontWeight: FontWeight.w700,
-                                color: AppColor.textBody,
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(height: 12.h),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                /// Business Name
+                                CustomText(
+                                  text: "Saunders Gradening Service",
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColor.textBody,
+                                  textAlign: TextAlign.center,
+                                ),
+                                SizedBox(height: 12.h),
 
-                              /// Rating & Reviews
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomText(
-                                    text: "4.5",
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w700,
-                                    color: AppColor.textBody,
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  Row(
-                                    children: List.generate(
-                                      5,
-                                          (index) => Icon(
-                                        Icons.star,
-                                        color: const Color(0xFFFFC107),
-                                        size: 20.sp,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 8.w),
-                                  CustomText(
-                                    text: "60 Review",
-                                    fontSize: 14.sp,
-                                    fontWeight: FontWeight.w400,
-                                    color: AppColor.textBody.withValues(alpha: 0.6),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 16.h),
-
-                              /// View Larger Map Button
-                              GestureDetector(
-                                onTap: () {
-                                  // Open full map or navigate to larger map view
-                                },
-                                child: Row(
+                                /// Rating & Reviews
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Icon(
-                                      Icons.map_outlined,
-                                      color: AppColor.primary,
-                                      size: 16.sp,
-                                    ),
-                                    SizedBox(width: 6.w),
                                     CustomText(
-                                      text: "View larger map",
+                                      text: "4.5",
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColor.textBody,
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Row(
+                                      children: List.generate(
+                                        5,
+                                            (index) => Icon(
+                                          Icons.star,
+                                          color: const Color(0xFFFFC107),
+                                          size: 20.sp,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    CustomText(
+                                      text: "60 Review",
                                       fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: AppColor.primary,
+                                      fontWeight: FontWeight.w400,
+                                      color: AppColor.textBody.withValues(alpha: 0.6),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
-                          ),
-                        ),
+                                SizedBox(height: 16.h),
 
-                        SizedBox(height: 24.h),
-                      ],
+                                /// View Larger Map Button
+                                GestureDetector(
+                                  onTap: () {
+                                    // Open full map or navigate to larger map view
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.map_outlined,
+                                        color: AppColor.primary,
+                                        size: 16.sp,
+                                      ),
+                                      SizedBox(width: 6.w),
+                                      CustomText(
+                                        text: "View larger map",
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColor.primary,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          SizedBox(height: 24.h),
+                        ],
+                      ),
                     ),
                   ),
                 ),

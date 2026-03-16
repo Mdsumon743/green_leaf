@@ -6,8 +6,9 @@ import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/utils/app_color.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatelessWidget  {
   const HomeScreen({super.key});
 
   @override
@@ -77,13 +78,13 @@ class HomeScreen extends StatelessWidget {
                     GestureDetector(
                       onTap: () => context.push('/notification'),
                       child: Container(
-                        width: 40.r,
-                        height: 40.r,
+                        width: 48.r,
+                        height: 48.r,
                         decoration: BoxDecoration(
-                          color: Colors.transparent,
+                          color: Color(0xFF126A19),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.7),
+                            color: Color(0xFF188220),
                             width: 1.5,
                           ),
                         ),
@@ -106,229 +107,246 @@ class HomeScreen extends StatelessWidget {
 
               // ── White gradient sheet (like ReferalScreen) ──────────────
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColor.containerBackground,
-                        AppColor.containerBackground.withValues(alpha: 0.95),
-                        AppColor.containerBackground.withValues(alpha: 0.85),
-                        AppColor.containerBackground.withValues(alpha: 0.75),
-                      ],
-                      stops: const [0.0, 0.5, 0.8, 1.0],
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      // gradient: LinearGradient(
+                      //   begin: Alignment.topCenter,
+                      //   end: Alignment.bottomCenter,
+                      //   colors: [
+                      //     AppColor.containerBackground,
+                      //     AppColor.containerBackground.withValues(alpha: 0.95),
+                      //     AppColor.containerBackground.withValues(alpha: 0.85),
+                      //     AppColor.containerBackground.withValues(alpha: 0.75),
+                      //   ],
+                      //   stops: const [0.0, 0.5, 0.8, 1.0],
+                      // ),
+                      color: Color(0xFFF3FFF0)
                     ),
-                    borderRadius: BorderRadius.only(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(50.r),
                       topRight: Radius.circular(50.r),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
-                    ),
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 40.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // ── Top row: All Services + My Quote ────────────
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.push('/allServices'),
-                                  child: _homeCard(
-                                    icon: IconPath.allService,
-                                    title: 'All Services',
-                                    subTitle: "View & Book"
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 14.w),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.push('/myQuote'),
-                                  child: _homeCard(
-                                    icon: IconPath.myQuote,
-                                    title: 'My Quote',
-                                    subTitle: "Estimate Overview"
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 14.h),
-
-                          // ── Bottom row: Upcoming Visits + Invoices ───────
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.push('/visit'),
-                                  child: _homeCard(
-                                    icon: IconPath.upcomingVisit,
-                                    title: 'Upcoming Visits',
-                                    subTitle: "3 Upcoming Visits"
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 14.w),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.push('/invoice'),
-                                  child: _homeCard(
-                                    icon: IconPath.homeInvoice,
-                                    title: 'Invoices',
-                                    subTitle: "Pending & Past Due"
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 14.h),
-                          Row(
-                            children: [
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.push('/subscription'),
-                                  child: _homeCard(
-                                      icon: IconPath.homePackage,
-                                      title: 'Packages',
-                                      subTitle: "Various Service Bundles"
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 14.w),
-                              Expanded(
-                                child: GestureDetector(
-                                  onTap: () => context.push('/gardening'),
-                                  child: _homeCard(
-                                      icon: IconPath.gardeningTips,
-                                      title: 'Gardening Tips',
-                                      subTitle: "Various Service Bundles"
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 24.h),
-
-                          // ── Next Visit card ──────────────────────────────
-                          Container(
-                            padding: EdgeInsets.all(20.r),
-                            decoration: _cardDecoration(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      ),
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 40.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ── Top row: All Services + My Quote ────────────
+                            SizedBox(height: 48.h,),
+                            Row(
                               children: [
-                                CustomText(
-                                  text: 'Next Visit',
-                                  fontSize: 20.sp,
-                                  fontWeight: FontWeight.w700,
-                                  color: AppColor.textBody,
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/allServices'),
+                                    child: _homeCard(
+                                      icon: IconPath.allService,
+                                      title: 'All Services',
+                                      subTitle: "View & Book"
+                                    ),
+                                  ),
                                 ),
-                                SizedBox(height: 16.h),
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    CustomText(
-                                      text: 'Lawn Mowin',
-                                      color: AppColor.primary,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14.sp,
-                                    ),
-                                    CustomText(
-                                      text: '2026-01-28 at 10:00 AM',
-                                      fontSize: 12.sp,
-                                      color: AppColor.textBody
-                                          .withValues(alpha: 0.7),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 20.h),
-                                SizedBox(
-                                  width: double.infinity,
-                                  height: 48.h,
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColor.primary,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                        BorderRadius.circular(10.r),
-                                      ),
-                                      elevation: 0,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
-                                      children: [
-                                        CustomText(
-                                          text: 'View Details',
-                                          color: Colors.white,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                        SizedBox(width: 8.w),
-                                        Icon(
-                                          Icons.arrow_forward_ios,
-                                          color: Colors.white,
-                                          size: 16.sp,
-                                        ),
-                                      ],
+                                SizedBox(width: 14.w),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/myQuote'),
+                                    child: _homeCard(
+                                      icon: IconPath.myQuote,
+                                      title: 'My Quote',
+                                      subTitle: "Estimate Overview"
                                     ),
                                   ),
                                 ),
                               ],
                             ),
-                          ),
 
-                          SizedBox(height: 16.h),
+                            SizedBox(height: 14.h),
 
-                          // ── Request a Quote button ───────────────────────
-                          SizedBox(
-                            width: double.infinity,
-                            height: 48.h,
-                            child: ElevatedButton(
-                              onPressed: () =>
-                                  context.push('/requestInquiry'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColor.primary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.circular(10.r),
+                            // ── Bottom row: Upcoming Visits + Invoices ───────
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/visit'),
+                                    child: _homeCard(
+                                      icon: IconPath.upcomingVisit,
+                                      title: 'Upcoming Visits',
+                                      subTitle: "3 Upcoming Visits"
+                                    ),
+                                  ),
                                 ),
-                                elevation: 0,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                                SizedBox(width: 14.w),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/invoice'),
+                                    child: _homeCard(
+                                      icon: IconPath.homeInvoice,
+                                      title: 'Invoices',
+                                      subTitle: "Pending & Past Due"
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 14.h),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/subscription'),
+                                    child: _homeCard(
+                                        icon: IconPath.homePackage,
+                                        title: 'Packages',
+                                        subTitle: "Various Service Bundles"
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 14.w),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () => context.push('/gardening'),
+                                    child: _homeCard(
+                                        icon: IconPath.gardeningTips,
+                                        title: 'Gardening Tips',
+                                        subTitle: "Various Service Bundles"
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            SizedBox(height: 24.h),
+
+                            // ── Next Visit card ──────────────────────────────
+                            Container(
+                              padding: EdgeInsets.all(20.r),
+                              decoration: _cardDecoration(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   CustomText(
-                                    text: 'Request a Quote',
-                                    color: Colors.white,
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
+                                    text: 'Next Visit',
+                                    fontSize: 20.sp,
+                                    fontWeight: FontWeight.w700,
+                                    color: AppColor.textBody,
                                   ),
-                                  SizedBox(width: 8.w),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.white,
-                                    size: 16.sp,
+                                  SizedBox(height: 16.h),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      CustomText(
+                                        text: 'Lawn Mowin',
+                                        color: AppColor.primary,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.sp,
+                                      ),
+                                      CustomText(
+                                        text: '2026-01-28 at 10:00 AM',
+                                        fontSize: 12.sp,
+                                        color: AppColor.textBody
+                                            .withValues(alpha: 0.7),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+                                  SizedBox(
+                                    width: double.infinity,
+                                    height: 48.h,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // Your navigation or logic here
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(vertical: 14.h), // Adjust height
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10.r),
+                                          gradient: const LinearGradient(
+                                            colors: [
+                                              Color(0xFF8CC40F),
+                                              Color(0xFF126A19),
+                                            ],
+                                            begin: Alignment.topCenter,
+                                            end: Alignment.bottomCenter,
+                                          ),
+                                          border: Border.all(width: 2.w,color: Color(0xFF348317)),
+                                          // Adding a subtle shadow to make it pop
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: const Color(0xFF11A41C).withOpacity(0.3),
+                                              blurRadius: 8,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            CustomText(
+                                              text: 'View Details',
+                                              color: Colors.white,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                            SizedBox(width: 8.w),
+                                            Icon(
+                                              Icons.arrow_forward_ios,
+                                              color: Colors.white,
+                                              size: 16.sp,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
                                   ),
                                 ],
                               ),
                             ),
-                          ),
 
-                          SizedBox(height: 35.h),
-                        ],
+                            SizedBox(height: 16.h),
+
+                            // ── Request a Quote button ───────────────────────
+                            SizedBox(
+                              width: double.infinity,
+                              height: 48.h,
+                              child: ElevatedButton(
+                                onPressed: () =>
+                                    context.push('/requestInquiry'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.primary,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                    BorderRadius.circular(10.r),
+                                  ),
+                                  elevation: 0,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CustomText(
+                                      text: 'Request a Quote',
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                    SizedBox(width: 8.w),
+                                    Icon(
+                                      Icons.arrow_forward_ios,
+                                      color: Colors.white,
+                                      size: 16.sp,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(height: 35.h),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -352,11 +370,6 @@ class HomeScreen extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.h),
-
-            decoration: const BoxDecoration(
-
-
-            ),
             child: Center(
               child: Image.asset(
                 icon,
@@ -389,7 +402,7 @@ class HomeScreen extends StatelessWidget {
       color: Color(0xFFF8F9EB),
       borderRadius: BorderRadius.circular(16.r),
       border: Border.all(
-        color: AppColor.serviceColor,
+        color: Color(0xFF055726).withValues(alpha: 0.3),
         width: 1.w,
       ),
       boxShadow: [

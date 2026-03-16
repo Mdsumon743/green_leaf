@@ -33,4 +33,10 @@ class IconPath {
   static const String homePackage = "$_basePath/packages.png";
   static const String gardeningTips = "$_basePath/gardeing_tips.png";
 
+  //add by Lisan
+  static const String appointment02 = "$_basePath/appointment-02.png";
+  static const String success2 = "$_basePath/Success_2.png";
+  static const String invoice3 = "$_basePath/invoice-03.png";
+  static const String googlePay = '$_basePath/google_pay.png';
+
 }

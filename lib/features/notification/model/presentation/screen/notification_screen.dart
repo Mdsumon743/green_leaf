@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 
 import '../../../provider/notification_provider.dart';
 import '../../app_notification.dart';
@@ -62,113 +63,122 @@ class NotificationScreen extends ConsumerWidget {
 
                 /// ===== Notification Container =====
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.only(top: 20),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF3FFF0),
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(40),
-                        topRight: Radius.circular(40),
-                      ),
-                    ),
-                    child: ListView.builder(
-                      itemCount: notifications.length,
-                      itemBuilder: (context, index) {
-                        final item = notifications[index];
-
-                        return GestureDetector(
-                          onTap: () {
-                            ref
-                                .read(notificationProvider.notifier)
-                                .markAsRead(index);
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 12),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                /// ===== Icon =====
-                                Container(
-                                  height: 42,
-                                  width: 42,
-                                  decoration: const BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Color(0xFF2E7D32),
-                                  ),
-                                  child: SvgPicture.asset(
-                                    IconPath.notification,
-                                    fit: BoxFit.fitWidth,
-                                    height: 24.h,
-                                    width: 24.w,
-                                  ),
-                                ),
-
-                                const SizedBox(width: 12),
-
-                                /// ===== Text =====
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.title,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                  child: ShaderMask(
+                    blendMode: BlendMode.dstIn,
+                    shaderCallback: (Rect bounds) {
+                      return const LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Colors.black, Colors.transparent],
+                        stops: [0.75, 1.0],
+                      ).createShader(bounds);
+                    },
+                    child: ClipPath(
+                      clipper: CurveClipper(),
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 60),
+                        decoration: const BoxDecoration(
+                          color: Color(0xFFF3FFF0),
+                        ),
+                        child: ListView.builder(
+                          itemCount: notifications.length,
+                          itemBuilder: (context, index) {
+                            final item = notifications[index];
+                            return GestureDetector(
+                              onTap: () {
+                                ref
+                                    .read(notificationProvider.notifier)
+                                    .markAsRead(index);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    /// ===== Icon =====
+                                    Container(
+                                      height: 42,
+                                      width: 42,
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Color(0xFF2E7D32),
                                       ),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        "Appointment: ${DateFormat('dd-MM-yyyy, hh:mm a').format(item.dateTime)}",
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors.black54,
-                                        ),
+                                      child: SvgPicture.asset(
+                                        IconPath.notification,
+                                        fit: BoxFit.fitWidth,
+                                        height: 24.h,
+                                        width: 24.w,
                                       ),
-                                      const SizedBox(height: 4),
-                                      RichText(
-                                        text: TextSpan(
-                                          text: "Status: ",
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.black54,
-                                          ),
-                                          children: [
-                                            TextSpan(
-                                              text: item.status
-                                                  .name
-                                                  .toUpperCase(),
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: _statusColor(
-                                                    item.status),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-                                /// ===== Unread Dot =====
-                                if (!item.isRead)
-                                  Container(
-                                    margin: const EdgeInsets.only(top: 6),
-                                    height: 10,
-                                    width: 10,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.green,
                                     ),
-                                  ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
+
+                                    const SizedBox(width: 12),
+
+                                    /// ===== Text =====
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.title,
+                                            style: const TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          Text(
+                                            "Appointment: ${DateFormat('dd-MM-yyyy, hh:mm a').format(item.dateTime)}",
+                                            style: const TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          RichText(
+                                            text: TextSpan(
+                                              text: "Status: ",
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black54,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: item.status
+                                                      .name
+                                                      .toUpperCase(),
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    color: _statusColor(
+                                                        item.status),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    /// ===== Unread Dot =====
+                                    if (!item.isRead)
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 6),
+                                        height: 10,
+                                        width: 10,
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.green,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ),
                 ),

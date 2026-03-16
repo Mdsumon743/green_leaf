@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import 'package:saunders/core/constants/icon_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_button.dart';
 import 'package:saunders/core/global/custom_dropdown.dart';
 import 'package:saunders/core/global/custom_text.dart';
@@ -325,197 +326,200 @@ class _RequestQuotePageState extends ConsumerState<RequestQuotePage> {
                 ),
 
                 SizedBox(height: 20.h),
-
                 // White form sheet
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColor.scaffoldBg,
-                      borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(30.r)),
-                    ),
-                    child: SingleChildScrollView(
-                      padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 120.h),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 22.w),
-                            child: CustomText(
-                              text:
-                              "Fill out the form below and we'll get back to you shortly.",
-                              textAlign: TextAlign.center,
-                              fontSize: 10.sp,
-                              color: AppColor.primary,
-                              height: 1.4,
-                            ),
-                          ),
-                          SizedBox(height: 32.h),
-
-                          // Job Details
-                          SectionHeader(title: 'Job Details'),
-                          SizedBox(height: 16.h),
-
-                          CustomText(
-                            text: 'Service Needed',
-                            fontWeight: FontWeight.w500,
-                            fontSize: 13.sp,
-                            color: AppColor.textBody,
-                          ),
-                          SizedBox(height: 6.h),
-                          CustomDropdownField(
-                            hint: 'Select a service',
-                            value: state.service,
-                            onTap: _showServiceSheet,
-                          ),
-                          SizedBox(height: 16.h),
-
-                          CustomText(
-                            text: 'Describe the Job',
-                            fontSize: 13.sp,
-                            fontWeight: FontWeight.w500,
-                            color: AppColor.textBody,
-                          ),
-                          SizedBox(height: 6.h),
-                          CustomTextFormField(
-                            controller: notifier.descController,
-                            maxLines: 5,
-                            onChanged: notifier.updateDescription,
-                            hintText: 'describe',
-                          ),
-                          SizedBox(height: 12.h),
-
-                          // Attach Photos Button (now tappable)
-                          GestureDetector(
-                            onTap: state.attachedPhotos.length >= 5
-                                ? null
-                                : _pickImages,
-                            child: AttachPhotosButton(
-                              count: state.attachedPhotos.length,
-                            ),
-                          ),
-                          SizedBox(height: 6.h),
-                          Padding(
-                            padding: EdgeInsets.only(left: 4.w),
-                            child: Text(
-                              state.attachedPhotos.length >= 5
-                                  ? 'Maximum 5 photos reached'
-                                  : '+ Add up to 5 photos',
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: state.attachedPhotos.length >= 5
-                                    ? Colors.red.shade700
-                                    : AppColor.subtitleText,
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: AppColor.scaffoldBg,
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(30.r)),
+                      ),
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 120.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SizedBox(height: 48.h,),
+                            Container(
+                              margin: EdgeInsets.symmetric(horizontal: 22.w),
+                              child: CustomText(
+                                text:
+                                "Fill out the form below and we'll get back to you shortly.",
+                                textAlign: TextAlign.center,
+                                fontSize: 10.sp,
+                                color: AppColor.primary,
+                                height: 1.4,
                               ),
                             ),
-                          ),
+                            SizedBox(height: 32.h),
 
-                          // ── Photo Previews ─────────────────────────────────
-                          if (state.attachedPhotos.isNotEmpty) ...[
+                            // Job Details
+                            SectionHeader(title: 'Job Details'),
                             SizedBox(height: 16.h),
-                            SizedBox(
-                              height: 90.h,
-                              child: ListView.builder(
-                                scrollDirection: Axis.horizontal,
-                                itemCount: state.attachedPhotos.length,
-                                itemBuilder: (context, index) {
-                                  final path = state.attachedPhotos[index];
-                                  return Padding(
-                                    padding: EdgeInsets.only(right: 12.w),
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                          BorderRadius.circular(12.r),
-                                          child: Image.file(
-                                            File(path),
-                                            width: 100.w,
-                                            height: 90.h,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) =>
-                                                Container(
-                                                  color: Colors.grey.shade300,
-                                                  child: const Icon(
-                                                      Icons.broken_image),
-                                                ),
+
+                            CustomText(
+                              text: 'Service Needed',
+                              fontWeight: FontWeight.w500,
+                              fontSize: 13.sp,
+                              color: AppColor.textBody,
+                            ),
+                            SizedBox(height: 6.h),
+                            CustomDropdownField(
+                              hint: 'Select a service',
+                              value: state.service,
+                              onTap: _showServiceSheet,
+                            ),
+                            SizedBox(height: 16.h),
+
+                            CustomText(
+                              text: 'Describe the Job',
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              color: AppColor.textBody,
+                            ),
+                            SizedBox(height: 6.h),
+                            CustomTextFormField(
+                              controller: notifier.descController,
+                              maxLines: 5,
+                              onChanged: notifier.updateDescription,
+                              hintText: 'describe',
+                            ),
+                            SizedBox(height: 12.h),
+
+                            // Attach Photos Button (now tappable)
+                            GestureDetector(
+                              onTap: state.attachedPhotos.length >= 5
+                                  ? null
+                                  : _pickImages,
+                              child: AttachPhotosButton(
+                                count: state.attachedPhotos.length,
+                              ),
+                            ),
+                            SizedBox(height: 6.h),
+                            Padding(
+                              padding: EdgeInsets.only(left: 4.w),
+                              child: Text(
+                                state.attachedPhotos.length >= 5
+                                    ? 'Maximum 5 photos reached'
+                                    : '+ Add up to 5 photos',
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: state.attachedPhotos.length >= 5
+                                      ? Colors.red.shade700
+                                      : AppColor.subtitleText,
+                                ),
+                              ),
+                            ),
+
+                            // ── Photo Previews ─────────────────────────────────
+                            if (state.attachedPhotos.isNotEmpty) ...[
+                              SizedBox(height: 16.h),
+                              SizedBox(
+                                height: 90.h,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: state.attachedPhotos.length,
+                                  itemBuilder: (context, index) {
+                                    final path = state.attachedPhotos[index];
+                                    return Padding(
+                                      padding: EdgeInsets.only(right: 12.w),
+                                      child: Stack(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                            BorderRadius.circular(12.r),
+                                            child: Image.file(
+                                              File(path),
+                                              width: 100.w,
+                                              height: 90.h,
+                                              fit: BoxFit.cover,
+                                              errorBuilder: (_, __, ___) =>
+                                                  Container(
+                                                    color: Colors.grey.shade300,
+                                                    child: const Icon(
+                                                        Icons.broken_image),
+                                                  ),
+                                            ),
                                           ),
-                                        ),
-                                        Positioned(
-                                          top: -4.h,
-                                          right: -4.w,
-                                          child: GestureDetector(
-                                            onTap: () => _removePhoto(index),
-                                            child: Container(
-                                              padding: EdgeInsets.all(4.r),
-                                              decoration: BoxDecoration(
-                                                color: Colors.red,
-                                                shape: BoxShape.circle,
-                                                border: Border.all(
-                                                    color: Colors.white,
-                                                    width: 2),
-                                              ),
-                                              child: Icon(
-                                                Icons.close,
-                                                color: Colors.white,
-                                                size: 16.sp,
+                                          Positioned(
+                                            top: -4.h,
+                                            right: -4.w,
+                                            child: GestureDetector(
+                                              onTap: () => _removePhoto(index),
+                                              child: Container(
+                                                padding: EdgeInsets.all(4.r),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.red,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                      color: Colors.white,
+                                                      width: 2),
+                                                ),
+                                                child: Icon(
+                                                  Icons.close,
+                                                  color: Colors.white,
+                                                  size: 16.sp,
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 8.h),
-                          ],
-
-                          SizedBox(height: 24.h),
-
-                          // Contact Information
-                          SectionHeader(title: 'Contact Information'),
-                          SizedBox(height: 16.h),
-
-                          CustomTextFormField(
-                            controller: notifier.nameController,
-                            hintText: 'Full Name',
-                            prefixIcon: const Icon(Icons.person),
-                            onChanged: notifier.updateName,
-                            keyboardType: TextInputType.name,
-                          ),
-                          SizedBox(height: 10.h),
-
-                          CustomTextFormField(
-                            controller: notifier.emailController,
-                            hintText: 'shanel@email.com',
-                            prefixIcon: const Icon(Icons.email),
-                            onChanged: notifier.updateEmail,
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                          SizedBox(height: 10.h),
-
-                          CustomTextFormField(
-                            controller: notifier.phoneController,
-                            hintText: '(123) 456-7890',
-                            prefixIcon: const Icon(Icons.call),
-                            onChanged: notifier.updatePhone,
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
+                              SizedBox(height: 8.h),
                             ],
-                          ),
-                          SizedBox(height: 10.h),
 
-                          CustomDropdownField(
-                            hint: 'Select a date',
-                            value: state.preferredDate == null
-                                ? null
-                                : DateFormat('dd MMM yyyy')
-                                .format(state.preferredDate!),
-                            onTap: _pickDate,
-                          ),
-                        ],
+                            SizedBox(height: 24.h),
+
+                            // Contact Information
+                            SectionHeader(title: 'Contact Information'),
+                            SizedBox(height: 16.h),
+
+                            CustomTextFormField(
+                              controller: notifier.nameController,
+                              hintText: 'Full Name',
+                              prefixIcon: const Icon(Icons.person),
+                              onChanged: notifier.updateName,
+                              keyboardType: TextInputType.name,
+                            ),
+                            SizedBox(height: 10.h),
+
+                            CustomTextFormField(
+                              controller: notifier.emailController,
+                              hintText: 'shanel@email.com',
+                              prefixIcon: const Icon(Icons.email),
+                              onChanged: notifier.updateEmail,
+                              keyboardType: TextInputType.emailAddress,
+                            ),
+                            SizedBox(height: 10.h),
+
+                            CustomTextFormField(
+                              controller: notifier.phoneController,
+                              hintText: '(123) 456-7890',
+                              prefixIcon: const Icon(Icons.call),
+                              onChanged: notifier.updatePhone,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                            ),
+                            SizedBox(height: 10.h),
+
+                            CustomDropdownField(
+                              hint: 'Select a date',
+                              value: state.preferredDate == null
+                                  ? null
+                                  : DateFormat('dd MMM yyyy')
+                                  .format(state.preferredDate!),
+                              onTap: _pickDate,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -549,11 +553,20 @@ class _RequestQuotePageState extends ConsumerState<RequestQuotePage> {
                 width: double.infinity,
                 height: 52.h,
                 child: CustomButton(
+                  borderRadius: 8.r,
+                  backgroundGradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color(0xFF8CC40F),
+                      Color(0xFF126A19),
+                    ]
+                  ),
                   text: "Submit Request",
                   onPressed: () {
                     showCustomDialog(
                       context,
-                      imagePath: IconPath.confirmation,
+                      imagePath: IconPath.success2,
                       title: "Success",
                       buttonText: "Done",
                       message:

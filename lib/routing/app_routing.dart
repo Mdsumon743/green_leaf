@@ -10,6 +10,7 @@ import 'package:saunders/features/customer_flow/home/presentation/screen/my_quot
 import 'package:saunders/features/customer_flow/home/presentation/widget/quote_details_screen.dart';
 import 'package:saunders/features/customer_flow/home/presentation/widget/request_inqury_page.dart';
 import 'package:saunders/features/customer_flow/invoice/presentation/screen/invoice_screen.dart';
+import 'package:saunders/features/customer_flow/invoice/presentation/screen/payment_methods.dart';
 import 'package:saunders/features/customer_flow/invoice/presentation/widget/invoice_details_screen.dart';
 import 'package:saunders/features/customer_flow/invoice/presentation/widget/payment_system.dart';
 import 'package:saunders/features/customer_flow/message/presentation/screen/chat_screen.dart';
@@ -99,6 +100,11 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/chat', builder: (context, state)=>ChatScreen()),
       GoRoute(path: '/invoiceDetails', builder: (context, state)=>InvoiceDetailsScreen()),
       GoRoute(path: '/paymentScreen', builder: (context, state)=>PaymentScreen()),
+
+      //add by Lisan Start
+      GoRoute(path: '/paymentMethods',builder: (context,state)=>PaymentMethodsScreen()),
+      //add by Lisan End
+
       GoRoute(path: '/editProfile', builder: (context, state)=>EditProfile()),
       GoRoute(path: '/address', builder: (context, state)=>AddressManagement()),
       GoRoute(path: '/system', builder: (context, state)=>SystemSetting()),

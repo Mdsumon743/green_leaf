@@ -44,7 +44,7 @@ class CustomTextFormField extends StatelessWidget {
     this.enabledBorder,
     this.focusedBorder,
     this.maxLines = 1,
-    this.containerColor = const Color(0xffF9FAFB),
+    this.containerColor, // Removed default here to handle it in build
     this.hintTextColor = AppColor.profileTextColor,
     this.hintTextSize = 15,
     this.suffixText,
@@ -57,6 +57,10 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
+    // Use the passed containerColor, otherwise fall back to theme defaults
+    final Color effectiveFillColor = containerColor ??
+        (isDarkMode ? const Color(0xff282828) : Colors.white);
+
     return TextFormField(
       controller: controller,
       readOnly: readonly,
@@ -64,7 +68,7 @@ class CustomTextFormField extends StatelessWidget {
       maxLines: maxLines,
       keyboardType: keyboardType,
       inputFormatters: inputFormatters,
-      onChanged: onChanged, // ✅ FIXED
+      onChanged: onChanged,
       validator: validator,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       style: GoogleFonts.poppins(
@@ -74,7 +78,7 @@ class CustomTextFormField extends StatelessWidget {
       ),
       decoration: InputDecoration(
         filled: true,
-        fillColor: isDarkMode ? const Color(0xff282828) : Colors.white,
+        fillColor: effectiveFillColor,
 
         prefixIcon: prefixIcon ??
             (prefixIconPath != null
@@ -106,37 +110,25 @@ class CustomTextFormField extends StatelessWidget {
 
         contentPadding: EdgeInsets.symmetric(
           vertical: 12.h,
-          horizontal: 12.w,
+          horizontal: 16.w,
         ),
 
-        border: border ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-            ),
+        // Updated borders to use the borderRadius parameter correctly
+        border: border ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
+        enabledBorder: enabledBorder ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
+        focusedBorder: focusedBorder ?? _buildBorder(borderRadius, AppColor.primary),
 
-        enabledBorder: enabledBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-            ),
-
-        focusedBorder: focusedBorder ??
-            OutlineInputBorder(
-              borderRadius: BorderRadius.circular(borderRadius ?? 8),
-              borderSide: const BorderSide(color: Color(0xFFE0E0E0)),
-            ),
-
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 8),
-          borderSide: const BorderSide(color: AppColor.error),
-        ),
-
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(borderRadius ?? 8),
-          borderSide: const BorderSide(color: AppColor.error),
-        ),
+        errorBorder: _buildBorder(borderRadius, AppColor.error),
+        focusedErrorBorder: _buildBorder(borderRadius, AppColor.error),
       ),
+    );
+  }
+
+  // Helper method for consistent borders
+  InputBorder _buildBorder(double? radius, Color color) {
+    return OutlineInputBorder(
+      borderRadius: BorderRadius.circular(radius?.r ?? 8.r),
+      borderSide: BorderSide(color: color),
     );
   }
 }

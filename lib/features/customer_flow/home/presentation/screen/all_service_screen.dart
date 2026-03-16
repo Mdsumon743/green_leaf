@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text_form_field.dart';
 import 'package:saunders/core/utils/app_color.dart';
 
@@ -220,147 +221,163 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
               ),
               SizedBox(height: 16.h),
 
-              // ── Search + Filter row ───────────────────────────────
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 16.w),
-                child: Row(
-                  children: [
-                    // Search
-                    Expanded(
-                      child: Container(
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          borderRadius: BorderRadius.circular(22.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.07),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: CustomTextFormField(
-                          controller: _searchController,
-                          onChanged: notifier.setSearch, hintText: 'search',
-
-                        ),
-                      ),
+              // ── White curved sheet ────────────────────────────────────
+              Expanded(
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3FFF0),
                     ),
-                    SizedBox(width: 10.w),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 60.h),
 
-                    // Filter icon button
-                    GestureDetector(
-                      onTap: _openFilterSheet,
-                      child: Container(
-                        width: 44.w,
-                        height: 44.h,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.92),
-                          borderRadius: BorderRadius.circular(22.r),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.07),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          alignment: Alignment.center,
-                          clipBehavior: Clip.none,
-                          children: [
-                            Icon(
-                              Icons.tune_rounded,
-                              color: AppColor.primary,
-                              size: 19.sp,
-                            ),
-                            if (hasActiveFilter)
-                              Positioned(
-                                top: 9,
-                                right: 9,
+                        // 2. Search + Filter row
+                        Container(
+                          margin: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: Row(
+                            children: [
+                              Expanded(
                                 child: Container(
-                                  width: 7,
-                                  height: 7,
-                                  decoration: const BoxDecoration(
-                                    color: Color(0xFFE05252),
-                                    shape: BoxShape.circle,
+                                  height: 44.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF126A19).withValues(alpha: 0.20),
+                                    borderRadius: BorderRadius.circular(99.r),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.07),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: CustomTextFormField(
+                                    controller: _searchController,
+                                    hintText: 'Search...',
+                                    hintTextColor: const Color(0xFF6B7280),
+                                    containerColor: const Color(0xFF126A19).withOpacity(0.10),
+                                    onChanged: notifier.setSearch,
+
+                                    // 1. Define the default state border
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(99.r),
+                                      borderSide: BorderSide(
+                                        color: const Color(0xFF126A19).withOpacity(0.40),
+                                        width: 1.w,
+                                      ),
+                                    ),
+
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(99.r),
+                                      borderSide: BorderSide(
+                                        color: const Color(0xFF126A19),
+                                        width: 1.5.w,
+                                      ),
+                                    ),
+
+                                    // Optional: Add a search icon to match the UI
+                                    prefixIcon: Icon(
+                                      Icons.search,
+                                      color: const Color(0xFF6B7280),
+                                      size: 20.sp,
+                                    ),
                                   ),
                                 ),
                               ),
-                          ],
+                              SizedBox(width: 10.w),
+                              GestureDetector(
+                                onTap: _openFilterSheet,
+                                child: Container(
+                                  width: 44.w,
+                                  height: 44.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xFF126A19).withValues(alpha: 0.20),
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Color(0xFF126A19).withValues(alpha: 0.40)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.07),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    alignment: Alignment.center,
+                                    clipBehavior: Clip.none,
+                                    children: [
+                                      Icon(Icons.filter_list_sharp, color: AppColor.primary, size: 19.sp),
+                                      if (hasActiveFilter)
+                                        Positioned(
+                                          top: 9, right: 9,
+                                          child: Container(
+                                            width: 7, height: 7,
+                                            decoration: BoxDecoration(color: Color(0xFF6B7280), shape: BoxShape.circle),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 14.h),
+
+                        // 3. Filter tabs
+                        SizedBox(
+                          height: 34.h,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            children: _tabs.map((t) {
+                              final isSelected = filter.selectedTab == t.$1;
+                              return GestureDetector(
+                                onTap: () => notifier.setTab(t.$1),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 180),
+                                  margin: EdgeInsets.only(right: 8.w),
+                                  padding: EdgeInsets.symmetric(horizontal: 16.w),
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+
+                                    color: isSelected ? AppColor.primary : Color(0xFFF3FFF0),
+                                    borderRadius: BorderRadius.circular(17.r),
+                                    border: Border.all(
+                                      color: isSelected ? AppColor.primary : Color(0xFF126A19),
+                                      width: 1.2,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    t.$2,
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                                      color: isSelected ? Colors.white : Color(0xFF126A19),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        SizedBox(height: 14.h),
+
+                        // 4. Service list
+                        Expanded(
+                          child: services.isEmpty
+                              ? _EmptyState()
+                              : ListView.separated(
+                            padding: EdgeInsets.fromLTRB(16.w, 4.h, 16.w, 40.h),
+                            itemCount: services.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                            itemBuilder: (_, i) => ServiceCard(service: services[i]),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 14.h),
-
-              // ── Filter tabs ────────────────────────────────────────
-              SizedBox(
-                height: 34.h,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  children: _tabs.map((t) {
-                    final isSelected = filter.selectedTab == t.$1;
-                    return GestureDetector(
-                      onTap: () => notifier.setTab(t.$1),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 180),
-                        curve: Curves.easeInOut,
-                        margin: EdgeInsets.only(right: 8.w),
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 16.w, vertical: 0),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: isSelected ? AppColor.primary : Colors.white,
-                          borderRadius: BorderRadius.circular(17.r),
-                          border: Border.all(
-                            color: isSelected
-                                ? AppColor.primary
-                                : AppColor.tabUnselectedBorder,
-                            width: 1.2,
-                          ),
-                        ),
-                        child: Text(
-                          t.$2,
-                          style: TextStyle(
-                            fontSize: 13.sp,
-                            fontWeight: isSelected
-                                ? FontWeight.w600
-                                : FontWeight.w400,
-                            color:
-                            isSelected ? Colors.white : AppColor.textMid,
-                            height: 1,
-                          ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ),
-              SizedBox(height: 14.h),
-
-              // ── Service list ───────────────────────────────────────
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppColor.scaffoldBg,
-                    borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(26.r)),
-                  ),
-                  child: services.isEmpty
-                      ? _EmptyState()
-                      : ListView.separated(
-                    padding: EdgeInsets.fromLTRB(
-                        16.w, 18.h, 16.w, 40.h),
-                    itemCount: services.length,
-                    separatorBuilder: (_, __) =>
-                        SizedBox(height: 12.h),
-                    itemBuilder: (_, i) =>
-                        ServiceCard(service: services[i]),
                   ),
                 ),
               ),
@@ -388,10 +405,9 @@ class ServiceCard extends StatelessWidget {
         border: Border.all(color: AppColor.cardBorder, width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
+              color: Color(0xFF055726).withValues(alpha: 0.4),
+              blurRadius: 6,
+          )
         ],
       ),
       child: Row(
@@ -438,7 +454,7 @@ class ServiceCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 12.sp,
-                      color: AppColor.textLight,
+                      color: Color(0xFF4A4E5A),
                       height: 1.4,
                     ),
                   ),
@@ -788,14 +804,3 @@ class _FilterBottomSheetState extends State<_FilterBottomSheet> {
 }
 
 // ── Entry Point ───────────────────────────────────────────────────────────────
-
-void main() {
-  runApp(
-    const ProviderScope(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: AllServicesScreen(),
-      ),
-    ),
-  );
-}
