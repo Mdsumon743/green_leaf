@@ -26,6 +26,7 @@ class HomeScreen extends StatelessWidget  {
 
           // ── Main column ────────────────────────────────────────────────
           Column(
+
             children: [
               // ── Header ─────────────────────────────────────────────────
               Container(
