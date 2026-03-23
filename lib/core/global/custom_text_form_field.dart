@@ -11,6 +11,8 @@ class CustomTextFormField extends StatelessWidget {
   final Widget? suffixIcon;
   final String? prefixIconPath;
   final Widget? prefixIcon;
+  final double? prefixIconSize;
+  final EdgeInsetsGeometry? prefixIconPadding; // New property
   final ValueChanged<String>? onChanged;
   final bool readonly;
   final bool obscureText;
@@ -35,6 +37,8 @@ class CustomTextFormField extends StatelessWidget {
     this.suffixIcon,
     this.prefixIconPath,
     this.prefixIcon,
+    this.prefixIconSize,
+    this.prefixIconPadding, // Added to constructor
     this.onChanged,
     this.readonly = false,
     this.obscureText = false,
@@ -44,7 +48,7 @@ class CustomTextFormField extends StatelessWidget {
     this.enabledBorder,
     this.focusedBorder,
     this.maxLines = 1,
-    this.containerColor, // Removed default here to handle it in build
+    this.containerColor,
     this.hintTextColor = AppColor.profileTextColor,
     this.hintTextSize = 15,
     this.suffixText,
@@ -57,78 +61,102 @@ class CustomTextFormField extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
-    // Use the passed containerColor, otherwise fall back to theme defaults
     final Color effectiveFillColor = containerColor ??
         (isDarkMode ? const Color(0xff282828) : Colors.white);
 
-    return TextFormField(
-      controller: controller,
-      readOnly: readonly,
-      obscureText: obscureText,
-      maxLines: maxLines,
-      keyboardType: keyboardType,
-      inputFormatters: inputFormatters,
-      onChanged: onChanged,
-      validator: validator,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      style: GoogleFonts.poppins(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w400,
-        color: isDarkMode ? AppColor.white : AppColor.headerColor,
+    // Standardize the padding for the prefix icon
+    final EdgeInsetsGeometry effectivePrefixPadding =
+        prefixIconPadding ?? EdgeInsets.symmetric(horizontal: 12.w);
+
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius?.r ?? 8.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 6,
+            spreadRadius: 0,
+            offset: const Offset(0, 3),
+          ),
+        ],
       ),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: effectiveFillColor,
-
-        prefixIcon: prefixIcon ??
-            (prefixIconPath != null
-                ? Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
-              child: Image.asset(
-                prefixIconPath!,
-                height: 24.h,
-                width: 24.w,
-              ),
-            )
-                : null),
-
-        suffixIcon: suffixIcon,
-        suffixText: suffixText,
-        suffixStyle: suffixTextStyle ??
-            GoogleFonts.poppins(
-              fontSize: 12.sp,
-              fontWeight: FontWeight.w400,
-              color: AppColor.primary,
-            ),
-
-        hintText: hintText,
-        hintStyle: GoogleFonts.poppins(
-          fontSize: hintTextSize?.sp ?? 15.sp,
+      child: TextFormField(
+        controller: controller,
+        readOnly: readonly,
+        obscureText: obscureText,
+        maxLines: maxLines,
+        keyboardType: keyboardType,
+        inputFormatters: inputFormatters,
+        onChanged: onChanged,
+        validator: validator,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        style: GoogleFonts.poppins(
+          fontSize: 16.sp,
           fontWeight: FontWeight.w400,
-          color: hintTextColor,
+          color: isDarkMode ? AppColor.white : AppColor.headerColor,
         ),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: effectiveFillColor,
 
-        contentPadding: EdgeInsets.symmetric(
-          vertical: 12.h,
-          horizontal: 16.w,
+          // --- Prefix Icon Logic with Custom Padding ---
+          prefixIcon: prefixIcon != null
+              ? Padding(
+            padding: effectivePrefixPadding,
+            child: prefixIcon,
+          )
+              : (prefixIconPath != null
+              ? Padding(
+            padding: effectivePrefixPadding,
+            child: Image.asset(
+              prefixIconPath!,
+              height: prefixIconSize?.h ?? 24.h,
+              width: prefixIconSize?.w ?? 24.w,
+            ),
+          )
+              : null),
+
+          prefixIconConstraints: BoxConstraints(
+            minWidth: 40.w,
+            minHeight: 0,
+          ),
+
+          suffixIcon: suffixIcon,
+          suffixText: suffixText,
+          suffixStyle: suffixTextStyle ??
+              GoogleFonts.poppins(
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w400,
+                color: AppColor.primary,
+              ),
+
+          hintText: hintText,
+          hintStyle: GoogleFonts.poppins(
+            fontSize: hintTextSize?.sp ?? 15.sp,
+            fontWeight: FontWeight.w400,
+            color: hintTextColor,
+          ),
+
+          contentPadding: EdgeInsets.symmetric(
+            vertical: 12.h,
+            horizontal: 16.w,
+          ),
+
+          // Borders
+          border: border ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
+          enabledBorder: enabledBorder ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
+          focusedBorder: focusedBorder ?? _buildBorder(borderRadius, AppColor.primary),
+          errorBorder: _buildBorder(borderRadius, AppColor.error),
+          focusedErrorBorder: _buildBorder(borderRadius, AppColor.error),
         ),
-
-        // Updated borders to use the borderRadius parameter correctly
-        border: border ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
-        enabledBorder: enabledBorder ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
-        focusedBorder: focusedBorder ?? _buildBorder(borderRadius, AppColor.primary),
-
-        errorBorder: _buildBorder(borderRadius, AppColor.error),
-        focusedErrorBorder: _buildBorder(borderRadius, AppColor.error),
       ),
     );
   }
 
-  // Helper method for consistent borders
   InputBorder _buildBorder(double? radius, Color color) {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(radius?.r ?? 8.r),
-      borderSide: BorderSide(color: color),
+      borderSide: BorderSide(color: color, width: 1.w),
     );
   }
 }

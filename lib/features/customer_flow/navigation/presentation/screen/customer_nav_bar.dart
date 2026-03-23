@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:saunders/core/constants/icon_path.dart';
+import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/utils/app_color.dart';
 
 import '../../../home/presentation/screen/home_screen.dart';
@@ -99,12 +100,12 @@ class CustomBottomNavBar extends ConsumerWidget {
             BottomNavigationBarItem(
               icon: Container(
                   margin: EdgeInsets.only(bottom: 4.w),
-                  child: SvgPicture.asset(IconPath.visit)
+                  child: Image.asset(IconPath.customerVisite,height: 24.h,width: 24.w,)
                 ///Icon(Icons.home_outlined, size: 24),
               ),
               activeIcon: Container(
                 margin: EdgeInsets.only(bottom: 4.w),
-                child: SvgPicture.asset(IconPath.activeVisit),
+                child: Image.asset(IconPath.activeCustomerVisite,height: 24.h,width: 24.w,)
               ),
               label: 'Visit',
             ),

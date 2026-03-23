@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
@@ -117,11 +118,11 @@ class _C {
 
   // status badge colours
   static const pendingBg     = Color(0xFFFFF3E0);
-  static const pendingText   = Color(0xFFF57C00);
+  static const pendingText   = Color(0xFFFAAD14);
   static const paidBg        = Color(0xFFE8F5E9);
-  static const paidText      = Color(0xFF2E7D32);
+  static const paidText      = Color(0xFF188220);
   static const dueBg         = Color(0xFFFFEBEE);
-  static const dueText       = Color(0xFFC62828);
+  static const dueText       = Color(0xFFFF6164);
 }
 
 // ── Screen ─────────────────────────────────────────────────────────────────────
@@ -131,45 +132,40 @@ class InvoiceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedTab      = ref.watch(invoiceTabProvider);
+    final selectedTab = ref.watch(invoiceTabProvider);
     final filteredInvoices = ref.watch(filteredInvoicesProvider);
 
     return Scaffold(
       backgroundColor: _C.scaffoldBg,
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          // ── Green gradient header bg ─────────────────────────────────
-          Positioned(
-            top: 0, left: 0, right: 0,
-            height: 200.h,
-            child: const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end:   Alignment.bottomRight,
-                  colors: [_C.gradientStart, _C.gradientEnd],
-                ),
-              ),
+          /// 1. TOP BACKGROUND IMAGE
+          Align(
+            alignment: Alignment.topCenter,
+            child: Image.asset(
+              ImagePath.notificationTopBG, // Replace with your top image path
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
           ),
 
-          // ── Decorative leaves ────────────────────────────────────────
-          Positioned(
-            top: -10, right: -14,
-            child: Opacity(
-              opacity: 0.22,
-              child: Icon(Icons.eco_rounded, color: Colors.white, size: 120.r),
-            ),
-          ),
-          Positioned(
-            top: 30, right: 70,
-            child: Opacity(
-              opacity: 0.10,
-              child: Icon(Icons.eco_rounded, color: Colors.white, size: 55.r),
+          /// 2. BOTTOM BACKGROUND IMAGE (Garden/Bottom)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset(
+              ImagePath.myQuotesDetailsBottumBG, // Replace with your bottom image path
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
           ),
 
-          // ── Main column ──────────────────────────────────────────────
+          /// 3. DARK OVERLAY (Optional - matches your previous screens)
+          Container(
+            color: Colors.black.withValues(alpha: 0.3),
+          ),
+
+          /// 4. MAIN CONTENT
           Column(
             children: [
               // AppBar
@@ -182,14 +178,14 @@ class InvoiceScreen extends ConsumerWidget {
                       GestureDetector(
                         onTap: () => context.pop(),
                         child: Container(
-                          width: 34.w, height: 34.h,
+                          width: 34.w,
+                          height: 34.h,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(8.r),
+                          child: Image.asset(
+                            IconPath.arrowLeft,
+                            height: 24.h,
+                            width: 24.h,
                           ),
-                          child: Icon(Icons.arrow_back_ios_new_rounded,
-                              color: Colors.white, size: 15.sp),
                         ),
                       ),
                       Expanded(
@@ -211,46 +207,69 @@ class InvoiceScreen extends ConsumerWidget {
 
               SizedBox(height: 14.h),
 
-              // ── White rounded sheet ──────────────────────────────────
+              // ── Main Scrolling Sheet ──
               Expanded(
                 child: ClipPath(
                   clipper: CurveClipper(),
                   child: Container(
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                      color: _C.scaffoldBg,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(28.r)),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          _C.scaffoldBg,
+                          _C.scaffoldBg,
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.9, 1.0],
+                      ),
                     ),
-                    child: Column(
-                      children: [
-                        // ── Total Balance card ───────────────────────────
-                        Container(
-                          margin: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 0),
-                          child: _TotalBalanceCard(),
-                        ),
-
-                        SizedBox(height: 16.h),
-
-                        // ── Tabs ─────────────────────────────────────────
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: _TabBar(selectedTab: selectedTab, ref: ref),
-                        ),
-
-                        SizedBox(height: 14.h),
-
-                        // ── Invoice list ─────────────────────────────────
-                        Expanded(
-                          child: filteredInvoices.isEmpty
-                              ? _EmptyState()
-                              : ListView.separated(
-                            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 40.h),
-                            itemCount: filteredInvoices.length,
-                            separatorBuilder: (_, __) => SizedBox(height: 10.h),
-                            itemBuilder: (_, i) =>
-                                _InvoiceCard(invoice: filteredInvoices[i]),
+                    child: ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white,
+                            Colors.white,
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.85, 1.0],
+                        ).createShader(bounds);
+                      },
+                      blendMode: BlendMode.dstIn,
+                      child: Column(
+                        children: [
+                          // ── Total Balance card ──
+                          Container(
+                            margin: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 0),
+                            child: _TotalBalanceCard(),
                           ),
-                        ),
-                      ],
+
+                          SizedBox(height: 16.h),
+
+                          // ── Tabs ──
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: _TabBar(selectedTab: selectedTab, ref: ref),
+                          ),
+
+                          SizedBox(height: 14.h),
+
+                          // ── Invoice list ──
+                          Expanded(
+                            child: filteredInvoices.isEmpty
+                                ? _EmptyState()
+                                : ListView.separated(
+                              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 100.h),
+                              itemCount: filteredInvoices.length,
+                              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                              itemBuilder: (_, i) => _InvoiceCard(invoice: filteredInvoices[i]),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -272,29 +291,35 @@ class _TotalBalanceCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color: _C.balanceBg,
+        color: Color(0xFF126A19),
         borderRadius: BorderRadius.circular(14.r),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CustomText(
-            text: 'Total Balance',
+          Row(
+            children: [
+              CustomText(
+                text: 'Total Balance',
 
-              fontSize: 13.sp,
-              color: Colors.white.withValues(alpha: 0.85),
-              fontWeight: FontWeight.w400,
+                  fontSize: 13.sp,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w400,
 
+              ),
+              Spacer(),
+              CustomText(
+                text:  '£150.00',
+
+                fontSize: 28.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+
+              ),
+            ],
           ),
           SizedBox(height: 4.h),
-          CustomText(
-           text:  '€150.00',
 
-              fontSize: 28.sp,
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-
-          ),
           SizedBox(height: 8.h),
           Container(
             height: 1,
@@ -305,7 +330,7 @@ class _TotalBalanceCard extends StatelessWidget {
            text:  'Last Payment: €30.00 Paid on 5th july',
 
               fontSize: 12.sp,
-              color: Colors.white.withValues(alpha: 0.75),
+              color: Colors.white,
 
           ),
         ],
@@ -325,30 +350,41 @@ class _TabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 42.h,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: _C.cardBorder, width: 1),
-      ),
-      child: Row(
+      height: 48.h, // Increased height to account for the pointer
+      child: Stack(
+        alignment: Alignment.topCenter,
         children: [
-          _Tab(
-            label: 'All',
-            isSelected: selectedTab == InvoiceTab.all,
-            isFirst: true,
-            onTap: () => ref.read(invoiceTabProvider.notifier).state = InvoiceTab.all,
-          ),
-          _Tab(
-            label: 'Paid',
-            isSelected: selectedTab == InvoiceTab.paid,
-            onTap: () => ref.read(invoiceTabProvider.notifier).state = InvoiceTab.paid,
-          ),
-          _Tab(
-            label: 'Due',
-            isSelected: selectedTab == InvoiceTab.due,
-            isLast: true,
-            onTap: () => ref.read(invoiceTabProvider.notifier).state = InvoiceTab.due,
+          // The Main Tab Container
+          Container(
+            height: 42.h,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(6.r), // Sharper corners per image
+              border: Border.all(color: const Color(0xFFD1D5DB), width: 1), // Light grey border
+            ),
+            child: Row(
+              children: [
+                _Tab(
+                  label: 'All',
+                  isSelected: selectedTab == InvoiceTab.all,
+                  onTap: () => ref.read(invoiceTabProvider.notifier).state = InvoiceTab.all,
+                ),
+                // Vertical Divider
+                Container(width: 1, color: const Color(0xFFD1D5DB)),
+                _Tab(
+                  label: 'Paid',
+                  isSelected: selectedTab == InvoiceTab.paid,
+                  onTap: () => ref.read(invoiceTabProvider.notifier).state = InvoiceTab.paid,
+                ),
+                // Vertical Divider
+                Container(width: 1, color: const Color(0xFFD1D5DB)),
+                _Tab(
+                  label: 'Due',
+                  isSelected: selectedTab == InvoiceTab.due,
+                  onTap: () => ref.read(invoiceTabProvider.notifier).state = InvoiceTab.due,
+                ),
+              ],
+            ),
           ),
         ],
       ),
@@ -359,16 +395,12 @@ class _TabBar extends StatelessWidget {
 class _Tab extends StatelessWidget {
   final String label;
   final bool isSelected;
-  final bool isFirst;
-  final bool isLast;
   final VoidCallback onTap;
 
   const _Tab({
     required this.label,
     required this.isSelected,
     required this.onTap,
-    this.isFirst = false,
-    this.isLast = false,
   });
 
   @override
@@ -376,164 +408,186 @@ class _Tab extends StatelessWidget {
     return Expanded(
       child: GestureDetector(
         onTap: onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 180),
-          margin: EdgeInsets.all(3.r),
+        behavior: HitTestBehavior.opaque,
+        child: Stack(
+          clipBehavior: Clip.none,
           alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: isSelected ? _C.primary : Colors.transparent,
-            borderRadius: BorderRadius.circular(7.r),
-          ),
-          child: CustomText(
-           text:  label,
+          children: [
+            // The Tab Background
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              // Image shows the selected tab fills the height but has slight side margins
+              margin: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: isSelected ? const Color(0xFF0E4B16) : Colors.transparent, // Dark Green
+                borderRadius: BorderRadius.circular(4.r),
+              ),
+              child: CustomText(
+                text: label,
+                fontSize: 14.sp,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
+                color: isSelected ? Colors.white : const Color(0xFF6B7280),
+              ),
+            ),
 
-              fontSize: 13.sp,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-              color: isSelected ? Colors.white : _C.textMid,
-
-          ),
+            // The Pointer (Triangle)
+            if (isSelected)
+              Positioned(
+                bottom: -10.h, // Positioned below the container
+                child: CustomPaint(
+                  size: Size(16.w, 8.h),
+                  painter: TabPointerPainter(const Color(0xFF0E4B16)),
+                ),
+              ),
+          ],
         ),
       ),
     );
   }
 }
+class TabPointerPainter extends CustomPainter {
+  final Color color;
+  const TabPointerPainter(this.color);
 
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.fill;
+
+    final path = Path();
+    // Draws a triangle pointing downwards
+    path.moveTo(0, 0);
+    path.lineTo(size.width / 2, size.height);
+    path.lineTo(size.width, 0);
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(CustomPainter oldDelegate) => false;
+}
 // ── Invoice Card ───────────────────────────────────────────────────────────────
 
 class _InvoiceCard extends StatelessWidget {
   final InvoiceModel invoice;
-   _InvoiceCard({required this.invoice});
-  final currencyFormat =
-  NumberFormat.currency(locale: 'en_GB', symbol: '£');
+  _InvoiceCard({required this.invoice});
+
+  // Updated to Dollar as requested previously
+  final currencyFormat = NumberFormat.currency(locale: 'en_GB', symbol: '£');
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.only(bottom: 12.h),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: _C.cardBorder, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(18.r), // Softer corners per image
+        border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Top row: image + title + status ─────────────────────────
-          Container(
-            margin: EdgeInsets.fromLTRB(12.w, 12.h, 12.w, 10.h),
+          // ── TOP SECTION: Image, Info, Amount ──
+          Padding(
+            padding: EdgeInsets.all(12.w),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Thumbnail
+                // 1. Thumbnail
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(10.r),
-                  child: SizedBox(
-                    width: 52.w,
-                    height: 52.h,
-                    child: Image.asset(
-                      invoice.imagePath,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: const Color(0xFFD4E8CC),
-                        child: Icon(Icons.park_rounded,
-                            color: _C.primary.withValues(alpha: 0.45), size: 26),
-                      ),
-                    ),
+                  borderRadius: BorderRadius.circular(12.r),
+                  child: Image.asset(
+                    invoice.imagePath,
+                    width: 63.w, // Slightly larger per image ratio
+                    height: 58.h,
+                    fit: BoxFit.cover,
                   ),
                 ),
                 SizedBox(width: 12.w),
 
-                // Title + time
+                // 2. Title and Time
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       CustomText(
-                       text:  invoice.serviceName,
-
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w700,
-                          color: _C.textDark,
-
+                        text: invoice.serviceName,
+                        fontSize: 16.sp, // Match image heading size
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
                       ),
-                      SizedBox(height: 3.h),
+                      SizedBox(height: 4.h),
                       CustomText(
-                       text:  invoice.timeAgo,
-                        fontSize: 12.sp, color: _C.textLight),
-
+                        text: invoice.timeAgo,
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w400,
+                        color: const Color(0xFF4A4E5A),
+                      ),
                     ],
                   ),
                 ),
 
-                // Status badge
+                // 3. Amount (Moved to top row per image)
                 _StatusBadge(status: invoice.status),
+                SizedBox(height: 12.h),
               ],
             ),
           ),
 
-          // ── Divider ──────────────────────────────────────────────────
-          Divider(height: 1, thickness: 1, color: _C.cardBorder),
+          // ── MIDDLE SECTION: Invoice # ──
+          Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: CustomText(
+                  text: 'Invoice #${invoice.id}',
+                  fontSize: 12.sp,
+                  color: const Color(0xFF4A4E5A),
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Spacer(),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12.w),
+                child: CustomText(
+                  text: currencyFormat.format(invoice.amount),
+                  fontSize: 20.sp, // Large and bold in image
+                  fontWeight: FontWeight.w600,
+                  color: const Color(0xFF25272C),
+                ),
+              ),
+            ],
+          ),
 
-          // ── Bottom row: invoice # + amount + view details ────────────
-          Container(
-            margin: EdgeInsets.fromLTRB(12.w, 10.h, 12.w, 10.h),
+          SizedBox(height: 12.h),
+          const Divider(height: 1, color: Color(0xFFF3F4F6)),
+
+          // ── BOTTOM SECTION: Category & View Details ──
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Invoice number + category
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                       text:  'Invoice #${invoice.id}',
-
-                          fontSize: 11.sp,
-                          color: _C.textLight,
-                          fontWeight: FontWeight.w500,
-
-                      ),
-                      SizedBox(height: 2.h),
-                      CustomText(
-                    text:     invoice.category,
-
-                          fontSize: 11.sp,
-                          color: _C.textLight,
-
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Amount
                 CustomText(
-                 text:  currencyFormat.format(invoice.amount),
-
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                    color: _C.textDark,
-
+                  text: invoice.category,
+                  fontSize: 12.sp,
+                  color: const Color(0xFF4A4E5A),
                 ),
-                SizedBox(width: 12.w),
-
-                // View Details
                 GestureDetector(
                   onTap: () => context.push("/invoiceDetails"),
                   child: Row(
                     children: [
                       CustomText(
-                       text:  'View Details',
-
-                          fontSize: 11.sp,
-                          color: _C.primary,
-                          fontWeight: FontWeight.w600,
+                        text: 'View Details',
+                        fontSize: 12.sp,
+                        color: const Color(0xFF4A4E5A), // Darker grey in image
                       ),
-                      SizedBox(width: 2.w),
+                      SizedBox(width: 4.w),
                       Icon(Icons.arrow_forward_ios_rounded,
-                          color: _C.primary, size: 10.sp),
+                          color: const Color(0xFF4A4E5A), size: 12.sp),
                     ],
                   ),
                 ),
@@ -557,11 +611,11 @@ class _StatusBadge extends StatelessWidget {
     Color bg, text;
     switch (status) {
       case InvoiceStatus.pending:
-        bg = _C.pendingBg; text = _C.pendingText;
+        bg = _C.pendingText ; text = Colors.white;
       case InvoiceStatus.paid:
-        bg = _C.paidBg;    text = _C.paidText;
+        bg = _C.paidText;    text = Colors.white;
       case InvoiceStatus.due:
-        bg = _C.dueBg;     text = _C.dueText;
+        bg = _C.dueText;     text = Colors.white;
     }
 
     String label;

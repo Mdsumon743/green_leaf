@@ -14,6 +14,7 @@ class Quote {
   final String quoteNumber;
   final double amount;
   final QuoteStatus status;
+  final String image;
 
   Quote({
     required this.id,
@@ -21,6 +22,7 @@ class Quote {
     required this.quoteNumber,
     required this.amount,
     required this.status,
+    required this.image
   });
 
   String get formattedPrice => '€ ${amount.toStringAsFixed(2)}';
@@ -46,6 +48,7 @@ class Quote {
     String? quoteNumber,
     double? amount,
     QuoteStatus? status,
+    String? image,
   }) {
     return Quote(
       id: id ?? this.id,
@@ -53,6 +56,7 @@ class Quote {
       quoteNumber: quoteNumber ?? this.quoteNumber,
       amount: amount ?? this.amount,
       status: status ?? this.status,
+      image: image ?? this.image
     );
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
@@ -28,33 +29,18 @@ class _MapViewState extends State<MapView> {
     return Scaffold(
       body: Stack(
         children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: Image.asset(ImagePath.myQuotesDetailsBottumBG, fit: BoxFit.contain),
+          ),
           /// ================= Background Images =================
-          Column(
-            children: [
-              /// Top Background
-              Container(
-                height: 200.h,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(ImagePath.visitBackground),
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                  ),
-                ),
-              ),
-              /// Bottom Background
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage(ImagePath.homeBackground),
-                      fit: BoxFit.cover,
-                      alignment: Alignment.bottomCenter,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset(ImagePath.myQuotesDetailsBottumBG, fit: BoxFit.fitWidth),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Image.asset(ImagePath.homeBackground, fit: BoxFit.fitWidth),
           ),
 
           /// ================= Overlay =================
@@ -62,11 +48,11 @@ class _MapViewState extends State<MapView> {
             children: [
               Container(
                 height: 200.h,
-                color: AppColor.primary.withValues(alpha: 0.7),
+                color: AppColor.primary.withValues(alpha: 0.25),
               ),
               Expanded(
                 child: Container(
-                  color: Colors.white.withValues(alpha: 0.95),
+                  color: Colors.white.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -85,14 +71,8 @@ class _MapViewState extends State<MapView> {
                         onTap: () => Navigator.pop(context),
                         child: Container(
                           padding: EdgeInsets.all(8.r),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.arrow_back_ios_new,
-                            color: Colors.white,
-                            size: 20.sp,
+                          child: Image.asset(
+                              IconPath.arrowLeft,height: 24.h,width: 24.w,
                           ),
                         ),
                       ),
@@ -107,8 +87,7 @@ class _MapViewState extends State<MapView> {
                   ),
                 ),
 
-                SizedBox(height: 60.h),
-
+                SizedBox(height: 24.h),
                 /// ================= Content Card =================
                 Expanded(
                   child: ClipPath(
@@ -116,33 +95,39 @@ class _MapViewState extends State<MapView> {
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColor.containerBackground,
+                              AppColor.containerBackground.withValues(alpha: 0.85),
+                              Colors.transparent
+                            ],
+                            stops: const [0.0, 0.8, 1.0],
+                          ),
                       ),
                       child: Column(
                         children: [
                           /// ================= Google Map =================
                           Expanded(
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
-                              child: GoogleMap(
-                                onMapCreated: _onMapCreated,
-                                initialCameraPosition: CameraPosition(
-                                  target: _center,
-                                  zoom: 11.0,
-                                ),
-                                markers: {
-                                  Marker(
-                                    markerId: const MarkerId('business_location'),
-                                    position: _center,
-                                    infoWindow: const InfoWindow(
-                                      title: 'Saunders Gradening Service',
-                                    ),
-                                  ),
-                                },
-                                zoomControlsEnabled: false,
-                                myLocationButtonEnabled: false,
-                                mapToolbarEnabled: false,
+                            child: GoogleMap(
+                              onMapCreated: _onMapCreated,
+                              initialCameraPosition: CameraPosition(
+                                target: _center,
+                                zoom: 11.0,
                               ),
+                              markers: {
+                                Marker(
+                                  markerId: const MarkerId('business_location'),
+                                  position: _center,
+                                  infoWindow: const InfoWindow(
+                                    title: 'Saunders Gradening Service',
+                                  ),
+                                ),
+                              },
+                              zoomControlsEnabled: false,
+                              myLocationButtonEnabled: false,
+                              mapToolbarEnabled: false,
                             ),
                           ),
 

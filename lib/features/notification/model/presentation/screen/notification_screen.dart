@@ -22,11 +22,29 @@ class NotificationScreen extends ConsumerWidget {
       body: Stack(
         children: [
           /// ===== Background Image =====
-          Image.asset(
-            ImagePath.homeBackground,
-            width: double.infinity,
-            height: double.infinity,
-            fit: BoxFit.cover,
+          /// ===== Background Images =====
+          Stack(
+            children: [
+              // Top Background Image
+              Align(
+                alignment: Alignment.topCenter,
+                child: Image.asset(
+                  ImagePath.notificationTopBG,
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+
+              // Bottom Background Image
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Image.asset(
+                  ImagePath.homeBackground,
+                  width: double.infinity,
+                  fit: BoxFit.fitWidth,
+                ),
+              ),
+            ],
           ),
 
           /// ===== Content =====
@@ -98,20 +116,19 @@ class NotificationScreen extends ConsumerWidget {
                                   children: [
                                     /// ===== Icon =====
                                     Container(
-                                      height: 42,
-                                      width: 42,
+                                      height: 42.h,
+                                      width: 42.w,
+                                      padding: EdgeInsets.all(8.r),
                                       decoration: const BoxDecoration(
                                         shape: BoxShape.circle,
                                         color: Color(0xFF2E7D32),
                                       ),
-                                      child: SvgPicture.asset(
-                                        IconPath.notification,
-                                        fit: BoxFit.fitWidth,
+                                      child: Image.asset(
+                                        IconPath.notification1,
                                         height: 24.h,
                                         width: 24.w,
                                       ),
                                     ),
-
                                     const SizedBox(width: 12),
 
                                     /// ===== Text =====

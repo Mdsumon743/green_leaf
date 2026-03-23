@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text_form_field.dart';
 import 'package:saunders/core/utils/app_color.dart';
@@ -182,7 +183,7 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
+                     padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
                   child: Row(
                     children: [
                       GestureDetector(
@@ -191,14 +192,8 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                           width: 34.w,
                           height: 34.h,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.18),
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
-                            size: 15.sp,
+                          child: Image.asset(
+                            IconPath.arrowLeft,height: 24.h,width: 24.w,
                           ),
                         ),
                       ),
@@ -206,7 +201,6 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                         child: CustomText(
                         text:  'All Services',
                           textAlign: TextAlign.center,
-
                             fontSize: 19.sp,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
@@ -243,7 +237,6 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                                 child: Container(
                                   height: 44.h,
                                   decoration: BoxDecoration(
-                                    color: Color(0xFF126A19).withValues(alpha: 0.20),
                                     borderRadius: BorderRadius.circular(99.r),
                                     boxShadow: [
                                       BoxShadow(
@@ -256,15 +249,16 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                                   child: CustomTextFormField(
                                     controller: _searchController,
                                     hintText: 'Search...',
-                                    hintTextColor: const Color(0xFF6B7280),
-                                    containerColor: const Color(0xFF126A19).withOpacity(0.10),
+                                    hintTextSize: 14.sp,
+                                    hintTextColor: Color(0xFF6B7280),
+                                    containerColor: Color(0xFF126A19).withValues(alpha: 0.2),
                                     onChanged: notifier.setSearch,
 
                                     // 1. Define the default state border
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(99.r),
                                       borderSide: BorderSide(
-                                        color: const Color(0xFF126A19).withOpacity(0.40),
+                                        color: Color(0xFF126A19).withValues(alpha: 0.40),
                                         width: 1.w,
                                       ),
                                     ),
@@ -272,7 +266,7 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                                     focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(99.r),
                                       borderSide: BorderSide(
-                                        color: const Color(0xFF126A19),
+                                        color: Color(0xFF126A19).withValues(alpha: 0.2),
                                         width: 1.5.w,
                                       ),
                                     ),
@@ -280,7 +274,7 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                                     // Optional: Add a search icon to match the UI
                                     prefixIcon: Icon(
                                       Icons.search,
-                                      color: const Color(0xFF6B7280),
+                                      color: Color(0xFF6B7280),
                                       size: 20.sp,
                                     ),
                                   ),
@@ -308,7 +302,9 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                                     alignment: Alignment.center,
                                     clipBehavior: Clip.none,
                                     children: [
-                                      Icon(Icons.filter_list_sharp, color: AppColor.primary, size: 19.sp),
+                                      Image.asset(
+                                        IconPath.filterMailCircle,height: 24.h, width: 24.w,
+                                      ),
                                       if (hasActiveFilter)
                                         Positioned(
                                           top: 9, right: 9,
@@ -459,24 +455,6 @@ class ServiceCard extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
-            ),
-          ),
-
-          // Arrow button
-          Padding(
-            padding: EdgeInsets.only(right: 14.w),
-            child: Container(
-              width: 30.w,
-              height: 30.h,
-              decoration: BoxDecoration(
-                color: AppColor.primary,
-                borderRadius: BorderRadius.circular(9.r),
-              ),
-              child: Icon(
-                Icons.arrow_forward_ios_rounded,
-                color: Colors.white,
-                size: 13.sp,
               ),
             ),
           ),

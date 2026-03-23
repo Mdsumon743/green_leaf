@@ -1,8 +1,10 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/core/constants/icon_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
+import '../../../../../core/constants/image_path.dart';
 import '../../../../../core/utils/app_color.dart';
 import '../../provider/chat_provider.dart';
 import '../widget/bubble.dart';
@@ -29,12 +31,12 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   void _send() {
     final text = _controller.text;
+    if (text.trim().isEmpty) return;
 
     ref.read(chatProvider.notifier).sendMessage(text, context);
-
     _controller.clear();
 
-    Future.delayed(const Duration(milliseconds: 80), () {
+    Future.delayed(const Duration(milliseconds: 150), () {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -51,36 +53,44 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBg,
+      // ResizeToAvoidBottomInset ensures the garden image stays put when keyboard opens
+      resizeToAvoidBottomInset: true,
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          /// Background Header
-          Positioned(
-            top: 0,
-            left: 0,
-            right: 0,
-            height: 180.h,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColor.headerGradTop,
-                    AppColor.headerGradBot,
-                  ],
-                ),
-              ),
+          /// 1. TOP BACKGROUND IMAGE
+          Align(
+            alignment: Alignment.topCenter,
+            child: Image.asset(
+              ImagePath.quoteBackground,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
             ),
           ),
 
+          /// 2. BOTTOM BACKGROUND IMAGE (Garden)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset(
+              ImagePath.myQuotesDetailsBottumBG,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+
+          /// 3. OVERLAY
+          Container(
+            color: Colors.black.withValues(alpha: 0.35),
+          ),
+
+          /// 4. MAIN UI
           Column(
             children: [
               /// AppBar
               SafeArea(
                 bottom: false,
                 child: Padding(
-                  padding:
-                  EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
+                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
                   child: Row(
                     children: [
                       GestureDetector(
@@ -89,17 +99,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                           width: 34.w,
                           height: 34.h,
                           alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color:
-                            Colors.white.withValues(alpha: 0.22),
-                            borderRadius:
-                            BorderRadius.circular(8.r),
-                          ),
-                          child: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            color: Colors.white,
-                            size: 15.sp,
-                          ),
+                          child: Image.asset(IconPath.arrowLeft,height: 24.h,width: 24.w,)
                         ),
                       ),
                       Expanded(
@@ -119,32 +119,59 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ),
 
-              SizedBox(height: 70.h),
+              SizedBox(height: 25.h),
 
-              /// Message List
+              /// Message List Container
+              /// Message List Container with Fading Background
               Expanded(
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding:
-                  EdgeInsets.fromLTRB(16.w, 0, 16.w, 12.h),
-                  itemCount: messages.length,
-                  itemBuilder: (_, i) {
-                    final msg = messages[i];
-                    return Column(
-                      children: [
-                        if (msg.showDateDivider)
-                          DateDivider(),
-                        Bubble(message: msg),
-                      ],
-                    );
-                  },
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      // Instead of a solid color, we use a gradient that ends in transparent
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          const Color(0xFFEDFFE8),           // Solid light green at top
+                          const Color(0xFFEDFFE8),
+                          const Color(0xFFEDFFE8).withValues(alpha: 0.8), // Slightly fading
+                          Colors.transparent,                // Completely clear at the bottom
+                        ],
+                        stops: const [0.0, 0.75,0.85, 1.0], // Card starts fading 60% of the way down
+                      ),
+                    ),
+                    // We keep the ShaderMask on the child (ListView) to make sure
+                    // the messages also fade out along with the background.
+                    child: ListView.builder(
+                      controller: _scrollController,
+                      padding: EdgeInsets.fromLTRB(16.w, 50.h, 16.w, 60.h),
+                      itemCount: messages.length,
+                      itemBuilder: (_, i) {
+                        final msg = messages[i];
+                        return Column(
+                          children: [
+                            if (msg.showDateDivider) const DateDivider(),
+                            Bubble(message: msg),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
                 ),
               ),
 
-              /// Input Bar
-              InputBar(
-                controller: _controller,
-                onSend: _send,
+              /// Input Bar Section
+              Container(
+                color: Colors.transparent, // Keep garden visible behind input
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).padding.bottom + 10.h,
+                ),
+                child: InputBar(
+                  controller: _controller,
+                  onSend: _send,
+                ),
               ),
             ],
           ),

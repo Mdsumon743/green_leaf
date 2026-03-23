@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+   import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:saunders/core/constants/image_path.dart';
@@ -106,6 +106,7 @@ class MyQuotePage extends ConsumerWidget {
                     itemBuilder: (context, index) {
                       final quote = quotes[index];
                       return QuoteCard(
+                        image: quote.image,
                         name: quote.name,
                         category: quote.category,
                         status: quote.statusText,
@@ -132,11 +133,11 @@ class MyQuotePage extends ConsumerWidget {
               borderRadius: BorderRadius.circular(8.r),
               gradient: const LinearGradient(
                 colors: [
-                  Color(0xFF9DC167), // Border gradient start
-                  Color(0xFF348317), // Border gradient end
+                  Color(0xFF9DC167),
+                  Color(0xFF348317),
                 ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
             child: Container(
@@ -144,11 +145,11 @@ class MyQuotePage extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(6.r), // 8 - 2 padding
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFF126A19), // Background gradient start
-                    Color(0xFF8CC40F), // Background gradient end
+                    Color(0xFF8CC40F),
+                    Color(0xFF126A19),
                   ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
               child: Material(
@@ -163,9 +164,8 @@ class MyQuotePage extends ConsumerWidget {
                       'Awaiting Approval',
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15.sp,
+                        fontSize: 14.sp,
                         fontWeight: FontWeight.w600,
-                        letterSpacing: 0.3,
                       ),
                     ),
                   ),

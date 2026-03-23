@@ -18,7 +18,7 @@ class InputBar extends StatelessWidget {
         MediaQuery.of(context).padding.bottom + 10.h,
       ),
       decoration: BoxDecoration(
-        color: AppColor.white,
+        color: Colors.transparent,//Color(0xFFEDFFE8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -34,8 +34,9 @@ class InputBar extends StatelessWidget {
             child: Container(
               height: 46.h,
               decoration: BoxDecoration(
-                color: AppColor.inputBg,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(23.r),
+                border: Border.all(width: 1,color: Color(0xFF126A19))
               ),
               child: TextField(
                 controller: controller,

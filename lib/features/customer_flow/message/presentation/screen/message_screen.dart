@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/custom_text_form_field.dart';
 
@@ -104,64 +105,69 @@ class MessageScreen extends ConsumerWidget {
               ),
 
               // ── White gradient sheet ──────────────────────────────────
+              // ── Main White Sheet ──
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withValues(alpha: 0.95),
-                        Colors.white.withValues(alpha: 0.7),
-                        Colors.transparent,
-                      ],
-                      stops: const [0.0, 0.5, 0.8, 1.0],
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
-                    ),
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    // FIX: Use a solid color here so the "Sheet" is visible
+                    decoration: const BoxDecoration(
+                      color: Color(0xFFF3FFF0), // Light mint/white background
                     ),
                     child: Column(
                       children: [
-                        // ── Search bar ────────────────────────────────
+                        // ── Search bar ──
                         Padding(
-                          padding: EdgeInsets.fromLTRB(20.w, 28.h, 20.w, 0),
+                          padding: EdgeInsets.fromLTRB(20.w, 68.h, 20.w, 0),
                           child: CustomTextFormField(
-                            borderRadius: 16.r,
                             controller: TextEditingController(),
-                            hintText: "Search...",
-                            prefixIcon:
-                            Icon(Icons.search, color: Colors.grey),
+                            hintText: "Search here...",
+                            borderRadius: 99,
+                            containerColor: const Color(0xFF126A19).withOpacity(0.1),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(99.r),
+                              borderSide: const BorderSide(color: Color(0xFF126A19)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(99.r),
+                              borderSide: const BorderSide(color: Color(0xFF126A19), width: 1.5),
+                            ),
+                            prefixIconPadding: EdgeInsets.only(left: 14.w, right: 0.w),
+                            prefixIcon: const Icon(Icons.search, color: Colors.grey),
                             onChanged: (value) {
-                              ref
-                                  .read(searchQueryProvider.notifier)
-                                  .state = value;
+                              ref.read(searchQueryProvider.notifier).state = value;
                             },
                           ),
                         ),
 
                         SizedBox(height: 16.h),
 
-                        // ── Messages list ─────────────────────────────
+                        // ── Messages list with Fade Effect ──
                         Expanded(
-                          child: ListView.separated(
-                            padding: EdgeInsets.fromLTRB(
-                                20.w, 0, 20.w, 40.h),
-                            itemCount: filteredMessages.length,
-                            separatorBuilder: (_, __) =>
-                                SizedBox(height: 12.h),
-                            itemBuilder: (context, index) {
-                              final message = filteredMessages[index];
-                              return MessageItem(message: message);
+                          child: ShaderMask(
+                            shaderCallback: (Rect bounds) {
+                              return LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.white,
+                                  Colors.white,
+                                  Colors.transparent // This fades the LIST, not the background
+                                ],
+                                stops: const [0.0, 0.5, 1.0],
+                              ).createShader(bounds);
                             },
+                            blendMode: BlendMode.dstIn,
+                            child: ListView.separated(
+                              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 40.h),
+                              itemCount: filteredMessages.length,
+                              separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                              itemBuilder: (context, index) {
+                                final message = filteredMessages[index];
+                                return MessageItem(message: message);
+                              },
+                            ),
                           ),
                         ),
                       ],

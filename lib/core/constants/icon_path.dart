@@ -38,5 +38,12 @@ class IconPath {
   static const String success2 = "$_basePath/Success_2.png";
   static const String invoice3 = "$_basePath/invoice-03.png";
   static const String googlePay = '$_basePath/google_pay.png';
+  static const String arrowLeft = '$_basePath/arrow_left.png';
+  static const String filterMailCircle = '$_basePath/filter_mail_circle.png';
+  static const String user = '$_basePath/user.png';
+  static const String camera = '$_basePath/camera.png';
+  static const String notification1 = '$_basePath/notification1.png';
+  static const String customerVisite = '$_basePath/customer_visite.png';
+  static const String activeCustomerVisite = '$_basePath/active_customer_visite.png';
 
 }

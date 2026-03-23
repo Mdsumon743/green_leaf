@@ -113,17 +113,17 @@ class HomeScreen extends StatelessWidget  {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      // gradient: LinearGradient(
-                      //   begin: Alignment.topCenter,
-                      //   end: Alignment.bottomCenter,
-                      //   colors: [
-                      //     AppColor.containerBackground,
-                      //     AppColor.containerBackground.withValues(alpha: 0.95),
-                      //     AppColor.containerBackground.withValues(alpha: 0.85),
-                      //     AppColor.containerBackground.withValues(alpha: 0.75),
-                      //   ],
-                      //   stops: const [0.0, 0.5, 0.8, 1.0],
-                      // ),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.95),
+                          AppColor.containerBackground.withValues(alpha: 0.85),
+                          AppColor.containerBackground.withValues(alpha: 0.75),
+                        ],
+                        stops: const [0.0, 0.5, 0.8, 1.0],
+                      ),
                       color: Color(0xFFF3FFF0)
                     ),
                     child: ClipRRect(

@@ -23,4 +23,8 @@ class ImagePath {
   static const String gardening = "$_basePath/gardening_one.png";
   static const String house = "$_basePath/house.png";
 
+  //add by Lisan
+  static const String notificationTopBG = '$_basePath/notification_top_bg.png';
+  static const String myQuotesDetailsBottumBG = '$_basePath/my_quotes_details_bottum_bg.png';
+
 }

@@ -58,24 +58,44 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 ),
 
                 // 3. Curved Body with Fade-Away Effect
+                // 3. Curved Body with Fade-Away Effect
                 Expanded(
-                  child: ShaderMask(
-                    blendMode: BlendMode.dstIn,
-                    shaderCallback: (Rect bounds) {
-                      return const LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Colors.black, Colors.transparent],
-                        stops: [0.70, 1.0], // Fade starts 70% down
-                      ).createShader(bounds);
-                    },
-                    child: ClipPath(
-                      clipper: CurveClipper(),
-                      child: Container(
-                        width: double.infinity,
-                        color: const Color(0xFFF3FFF0),
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        // CHANGE: Use a Gradient here instead of a solid color
+                        // This makes the white "sheet" physically disappear at the bottom
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            const Color(0xFFF3FFF0), // Your light green/white color
+                            const Color(0xFFF3FFF0),
+                            Colors.transparent,      // Fully clear at the bottom
+                          ],
+                          stops: const [0.0, 0.70, 1.0], // Card starts disappearing at 70%
+                        ),
+                      ),
+                      child: ShaderMask(
+                        blendMode: BlendMode.dstIn,
+                        shaderCallback: (Rect bounds) {
+                          return const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.white,
+                              Colors.white,
+                              Colors.transparent
+                            ],
+                            stops: [0.0, 0.75, 1.0], // Content (cards) fades at 75%
+                          ).createShader(bounds);
+                        },
                         child: SingleChildScrollView(
-                          padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 100.h),
+                          // Increase bottom padding so the last payment method
+                          // doesn't get cut off by the fade effect
+                          padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 140.h),
                           child: Column(
                             children: [
                               _buildPaymentCard(
@@ -88,7 +108,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                                 imagePath: IconPath.googlePay,
                                 label: "Pay",
                                 value: "google",
-                                imageHeight: 24.h
+                                imageHeight: 24.h,
                               ),
                               SizedBox(height: 16.h),
                               _buildPaymentCard(

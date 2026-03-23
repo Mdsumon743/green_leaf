@@ -1,6 +1,7 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:saunders/core/constants/image_path.dart';
 
 import '../model/quote_data_model.dart';
 
@@ -10,6 +11,7 @@ class QuotesNotifier extends StateNotifier<List<Quote>> {
 
   static final List<Quote> _initialQuotes = [
     Quote(
+      image: ImagePath.gardening,
       id: '1',
       name: 'Garden Maintenance',
       quoteNumber: '1024',
@@ -17,6 +19,7 @@ class QuotesNotifier extends StateNotifier<List<Quote>> {
       status: QuoteStatus.pending,
     ),
     Quote(
+      image: ImagePath.gardening,
       id: '2',
       name: 'Garden Maintenance',
       quoteNumber: '1024',
@@ -24,6 +27,7 @@ class QuotesNotifier extends StateNotifier<List<Quote>> {
       status: QuoteStatus.approved,
     ),
     Quote(
+      image: ImagePath.gardening,
       id: '3',
       name: 'Pool Cleaning',
       quoteNumber: '1025',
@@ -31,6 +35,7 @@ class QuotesNotifier extends StateNotifier<List<Quote>> {
       status: QuoteStatus.pending,
     ),
     Quote(
+      image: ImagePath.gardening,
       id: '4',
       name: 'Lawn Mowing',
       quoteNumber: '1026',
