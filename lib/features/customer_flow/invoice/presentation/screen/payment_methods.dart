@@ -5,6 +5,8 @@ import 'package:saunders/core/constants/icon_path.dart';
 
 import '../../../../../core/constants/image_path.dart';
 import '../../../../../core/global/curve_clipper.dart';
+import '../../../../../core/global/custom_text.dart';
+import '../../../../../core/utils/app_color.dart';
 
 class PaymentMethodsScreen extends StatefulWidget {
   const PaymentMethodsScreen({super.key});
@@ -21,10 +23,12 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. Your Background Image (Already provided by you)
-          Image.asset(
-            ImagePath.quoteBackground,
-            fit: BoxFit.cover,
+          // 1. Background Image
+          Positioned.fill(
+            child: Image.asset(
+              ImagePath.quoteBackground,
+              fit: BoxFit.cover,
+            ),
           ),
 
           SafeArea(
@@ -58,67 +62,49 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 ),
 
                 // 3. Curved Body with Fade-Away Effect
-                // 3. Curved Body with Fade-Away Effect
                 Expanded(
                   child: ClipPath(
                     clipper: CurveClipper(),
                     child: Container(
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        // CHANGE: Use a Gradient here instead of a solid color
-                        // This makes the white "sheet" physically disappear at the bottom
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            const Color(0xFFF3FFF0), // Your light green/white color
-                            const Color(0xFFF3FFF0),
-                            Colors.transparent,      // Fully clear at the bottom
+                            AppColor.containerBackground,
+                            AppColor.containerBackground,
+                            AppColor.containerBackground.withValues(alpha: 0.8),
+                            Colors.transparent,
                           ],
-                          stops: const [0.0, 0.70, 1.0], // Card starts disappearing at 70%
+                          stops: const [0.0, 0.4, 0.7, 1.0],
                         ),
                       ),
-                      child: ShaderMask(
-                        blendMode: BlendMode.dstIn,
-                        shaderCallback: (Rect bounds) {
-                          return const LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.white,
-                              Colors.white,
-                              Colors.transparent
-                            ],
-                            stops: [0.0, 0.75, 1.0], // Content (cards) fades at 75%
-                          ).createShader(bounds);
-                        },
-                        child: SingleChildScrollView(
-                          // Increase bottom padding so the last payment method
-                          // doesn't get cut off by the fade effect
-                          padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 140.h),
-                          child: Column(
-                            children: [
-                              _buildPaymentCard(
-                                icon: Icons.apple,
-                                label: "Apple Pay",
-                                value: "apple",
-                              ),
-                              SizedBox(height: 16.h),
-                              _buildPaymentCard(
-                                imagePath: IconPath.googlePay,
-                                label: "Pay",
-                                value: "google",
-                                imageHeight: 24.h,
-                              ),
-                              SizedBox(height: 16.h),
-                              _buildPaymentCard(
-                                icon: Icons.credit_card,
-                                label: "Mastercard / Credit",
-                                subtitle: "**** 4468",
-                                value: "mastercard",
-                              ),
-                            ],
-                          ),
+                      child: SingleChildScrollView(
+                        // Significant bottom padding to ensure list items don't hide behind button
+                        padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 120.h),
+                        child: Column(
+                          children: [
+                            _buildPaymentCard(
+                              icon: Icons.apple,
+                              label: "Apple Pay",
+                              value: "apple",
+                            ),
+                            SizedBox(height: 16.h),
+                            _buildPaymentCard(
+                              imagePath: IconPath.googlePay,
+                              label: "Pay",
+                              value: "google",
+                              imageHeight: 24.h,
+                            ),
+                            SizedBox(height: 16.h),
+                            _buildPaymentCard(
+                              icon: Icons.credit_card,
+                              label: "Mastercard / Credit",
+                              subtitle: "**** 4468",
+                              value: "mastercard",
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -128,12 +114,49 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             ),
           ),
 
-          // 4. Floating "Save & Pay" Button at the bottom
-          Positioned(
-            bottom: 40.h,
-            left: 20.w,
-            right: 20.w,
-            child: _buildGradientButton(),
+          // 4. Fixed Bottom Button (Removed from Column to sit on top of everything)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 40.h),
+              child: GestureDetector(
+                onTap: () {
+                  // Handle Save & Pay logic
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 54.h,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Color(0xFF8CC40F), Color(0xFF126A19)],
+                    ),
+                    borderRadius: BorderRadius.circular(12.r),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF126A19).withValues(alpha: 0.3),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CustomText(
+                        text: "Save & Pay",
+                        color: Colors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                      SizedBox(width: 10.w),
+                      Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14.sp),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -146,10 +169,10 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
     required String label,
     String? subtitle,
     required String value,
-    double? height,        // Card height
-    double? width,         // Card width
-    double? imageHeight,   // Logo height
-    double? imageWidth,    // Logo width
+    double? height,
+    double? width,
+    double? imageHeight,
+    double? imageWidth,
   }) {
     bool isSelected = selectedMethod == value;
     return GestureDetector(
@@ -160,30 +183,24 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
         padding: EdgeInsets.all(16.r),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: Colors.transparent,
+          color: Colors.white.withValues(alpha: 0.5), // Subtle background for card
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
-            color: isSelected ? const Color(0xFF11A41C) : Colors.grey.shade200,
+            color: isSelected ? const Color(0xFF11A41C) : Colors.white.withValues(alpha: 0.3),
             width: 1.w,
           ),
         ),
         child: Row(
           children: [
-            /// ===== Leading Icon or Image =====
-            if (icon != null)
-              Icon(icon, size: imageHeight?.sp ?? 28.sp), // Fallback to 28
-
+            if (icon != null) Icon(icon, size: imageHeight?.sp ?? 28.sp, color: AppColor.primary),
             if (imagePath != null)
               Image.asset(
                 imagePath,
                 width: imageWidth ?? 28.w,
                 height: imageHeight ?? 28.h,
-                fit: BoxFit.contain, // Ensures the logo doesn't distort
+                fit: BoxFit.contain,
               ),
-
             SizedBox(width: 16.w),
-
-            /// ===== Text Content =====
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,8 +222,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
                 ],
               ),
             ),
-
-            /// ===== Radio Indicator =====
             Container(
               height: 20.r,
               width: 20.r,
@@ -232,38 +247,6 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-  Widget _buildGradientButton() {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.symmetric(vertical: 16.h),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.r),
-        gradient: const LinearGradient(
-          colors: [Color(0xFF11A41C), Color(0xFF0F4A11)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFF11A41C).withOpacity(0.3),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Save & Pay",
-            style: TextStyle(color: Colors.white, fontSize: 18.sp, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(width: 8.w),
-          const Icon(Icons.arrow_forward_ios, color: Colors.white, size: 18),
-        ],
       ),
     );
   }

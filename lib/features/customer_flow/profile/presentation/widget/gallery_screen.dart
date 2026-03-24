@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../../core/constants/icon_path.dart';
 import '../../../../../core/constants/image_path.dart';
+import '../../../../../core/global/curve_clipper.dart';
 import '../../../../../core/global/custom_text.dart';
 import '../../../../../core/utils/app_color.dart';
 
@@ -92,156 +94,138 @@ class GalleryScreen extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
+          // ── Background image ───────────────────────────────────────
           Positioned.fill(
             child: Image.asset(
-              ImagePath.quoteBackground,
+              ImagePath.roleBackground, // Consistent with other screens
               fit: BoxFit.cover,
             ),
           ),
 
           Column(
             children: [
-              // Header
-              Container(
-                padding: EdgeInsets.only(
-                  top: 50.h,
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 20.h,
-                ),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
+              // ── Header (Centered Title) ──────────────────────────────
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        context.pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 24.sp,
-                      ),
+                      onTap: () => context.pop(),
+                      child: Icon(Icons.arrow_back, color: Colors.white, size: 24.sp),
                     ),
-                    Text(
-                      'Gallery',
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Icon(
-                      Icons.favorite_outline,
+                    const Spacer(),
+                    CustomText(
+                      text: 'Gallery',
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
                       color: Colors.white,
-                      size: 24.sp,
+                    ),
+                    const Spacer(),
+                    Container(
+                      padding: EdgeInsets.all(11.67.r),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF126A19),
+                        shape: BoxShape.circle,
+                        border: Border.all(width: 0.83,color: Color(0xFF188220)
+                        )
+                      ),
+                        child: Image.asset(IconPath.filterEdit,height: 16.67.h,width: 16.67.w,)
                     ),
                   ],
                 ),
               ),
 
-              // Content area with gradient
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    top: 24.h,
-                    left: 20.w,
-                    right: 20.w,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withOpacity(0.95),
-                        Colors.white.withOpacity(0.7),
-                        Colors.transparent,
-                      ],
-                      stops: [0.0, 0.5, 0.8, 1.0],
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Category Filters
-                      SizedBox(
-                        height: 44.h,
-                        child: ListView.separated(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: categories.length,
-                          separatorBuilder: (context, index) =>
-                              SizedBox(width: 8.w),
-                          itemBuilder: (context, index) {
-                            final category = categories[index];
-                            final isSelected =
-                                selectedCategory == category.name;
+              SizedBox(height: 30.h),
 
-                            return GestureDetector(
-                              onTap: () {
-                                ref.read(selectedCategoryProvider.notifier).state =
-                                    category.name;
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20.w,
-                                  vertical: 10.h,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: isSelected
-                                      ? Color(0xFF2D5F3C)
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(20.r),
-                                  border: Border.all(
-                                    color: isSelected
-                                        ? Color(0xFF2D5F3C)
-                                        : Color(0xFFE5E7EB),
-                                    width: 1,
+              // ── Curved Content Area ──────────────────────────────────
+              Expanded(
+                child: ClipPath(
+                  clipper: CurveClipper(), // Applied the clipper
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.85),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.65, 0.8, 1.0],
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 60.h), // Offset for the curve peak
+
+                        // Category Filters (Horizontal scroll)
+                        SizedBox(
+                          height: 44.h,
+                          child: ListView.separated(
+                            padding: EdgeInsets.symmetric(horizontal: 20.w),
+                            scrollDirection: Axis.horizontal,
+                            itemCount: categories.length,
+                            separatorBuilder: (context, index) => SizedBox(width: 8.w),
+                            itemBuilder: (context, index) {
+                              final category = categories[index];
+                              final isSelected = selectedCategory == category.name;
+
+                              return GestureDetector(
+                                onTap: () {
+                                  ref.read(selectedCategoryProvider.notifier).state = category.name;
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                  decoration: BoxDecoration(
+                                    color: isSelected ? const Color(0xFF126A19) : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(25.r),
+                                    border: Border.all(color: Color(0xFF126A19),width: 1),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.04),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      )
+                                    ],
                                   ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    category.name,
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
+                                  child: Center(
+                                    child: CustomText(
+                                      text: category.name,
+                                      fontSize: 12.sp,
                                       fontWeight: FontWeight.w500,
-                                      color: isSelected
-                                          ? Colors.white
-                                          : Color(0xFF6B7280),
+                                      color: isSelected ? Colors.white : const Color(0xFF126A19),
                                     ),
                                   ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
 
-                      SizedBox(height: 24.h),
+                        SizedBox(height: 24.h),
 
-                      // Gallery Items
-                      Expanded(
-                        child: ListView.separated(
-                          padding: EdgeInsets.only(bottom: 100.h),
-                          itemCount: filteredItems.length,
-                          separatorBuilder: (context, index) =>
-                              SizedBox(height: 24.h),
-                          itemBuilder: (context, index) {
-                            final item = filteredItems[index];
-                            return GalleryItemCard(
-                              title: item.title,
-                              beforeImage: item.beforeImage,
-                              afterImage: item.afterImage,
-                            );
-                          },
+                        // Gallery Items List
+                        Expanded(
+                          child: ListView.separated(
+                            padding: EdgeInsets.only(left: 20.w, right: 20.w, bottom: 100.h),
+                            itemCount: filteredItems.length,
+                            separatorBuilder: (context, index) => SizedBox(height: 24.h),
+                            itemBuilder: (context, index) {
+                              final item = filteredItems[index];
+                              return GalleryItemCard(
+                                title: item.title,
+                                beforeImage: item.beforeImage,
+                                afterImage: item.afterImage,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

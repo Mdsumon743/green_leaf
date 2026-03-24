@@ -291,19 +291,10 @@ class GardeningTips extends ConsumerWidget {
   Widget _buildBackButton(BuildContext context) {
     return GestureDetector(
       onTap: () => context.pop(),
-      child: Container(
-        width: 44.r,
-        height: 44.r,
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.20),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
-        ),
-        child: Icon(
-          Icons.arrow_back_rounded,
-          color: Colors.white,
-          size: 22.sp,
-        ),
+      child: Icon(
+        Icons.arrow_back_rounded,
+        color: Colors.white,
+        size: 22.sp,
       ),
     );
   }

@@ -53,18 +53,19 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
     return Scaffold(
       backgroundColor: AppColor.scaffoldBg,
-      // ResizeToAvoidBottomInset ensures the garden image stays put when keyboard opens
       resizeToAvoidBottomInset: true,
       body: Stack(
         fit: StackFit.expand,
         children: [
           /// 1. TOP BACKGROUND IMAGE
-          Align(
-            alignment: Alignment.topCenter,
-            child: Image.asset(
-              ImagePath.quoteBackground,
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                ImagePath.roleBackground, // Consistent with other screens
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
@@ -78,75 +79,65 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
             ),
           ),
 
-          /// 3. OVERLAY
-          Container(
-            color: Colors.black.withValues(alpha: 0.35),
-          ),
-
-          /// 4. MAIN UI
+          /// 3. MAIN UI
           Column(
             children: [
-              /// AppBar
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 10.h, 16.w, 0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        child: Container(
-                          width: 34.w,
-                          height: 34.h,
-                          alignment: Alignment.center,
-                          child: Image.asset(IconPath.arrowLeft,height: 24.h,width: 24.w,)
-                        ),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
+              /// Header
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 34.w,
+                        height: 34.h,
+                        alignment: Alignment.center,
+                        child: Image.asset(IconPath.arrowLeft, height: 24.h, width: 24.w),
                       ),
-                      Expanded(
-                        child: Text(
-                          'Message',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 19.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
+                    ),
+                    const Spacer(),
+                    Text(
+                      'Message',
+                      style: TextStyle(
+                        fontSize: 20.sp,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
                       ),
-                      SizedBox(width: 34.w),
-                    ],
-                  ),
+                    ),
+                    const Spacer(),
+                    SizedBox(width: 34.w), // Balance for back button
+                  ],
                 ),
               ),
 
               SizedBox(height: 25.h),
 
-              /// Message List Container
-              /// Message List Container with Fading Background
+              /// 4. Curved Message Area
               Expanded(
                 child: ClipPath(
                   clipper: CurveClipper(),
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      // Instead of a solid color, we use a gradient that ends in transparent
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          const Color(0xFFEDFFE8),           // Solid light green at top
-                          const Color(0xFFEDFFE8),
-                          const Color(0xFFEDFFE8).withValues(alpha: 0.8), // Slightly fading
-                          Colors.transparent,                // Completely clear at the bottom
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.8),
+                          Colors.transparent,
                         ],
-                        stops: const [0.0, 0.75,0.85, 1.0], // Card starts fading 60% of the way down
+                        stops: const [0.0, 0.75, 0.9, 1.0],
                       ),
                     ),
-                    // We keep the ShaderMask on the child (ListView) to make sure
-                    // the messages also fade out along with the background.
                     child: ListView.builder(
                       controller: _scrollController,
-                      padding: EdgeInsets.fromLTRB(16.w, 50.h, 16.w, 60.h),
+                      // Top padding (60.h) ensures bubbles don't hide under the curve peak
+                      padding: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 100.h),
                       itemCount: messages.length,
                       itemBuilder: (_, i) {
                         final msg = messages[i];
@@ -162,11 +153,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
                 ),
               ),
 
-              /// Input Bar Section
+              /// 5. Input Bar Section
               Container(
-                color: Colors.transparent, // Keep garden visible behind input
+                color: Colors.transparent,
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).padding.bottom + 10.h,
+                  left: 16.w,
+                  right: 16.w,
                 ),
                 child: InputBar(
                   controller: _controller,

@@ -72,7 +72,9 @@ class CustomerOnboarding extends ConsumerWidget {
                           child: RoleSelectButton(
                             text: "Sign up",
                             role: UserRole.employee,
-                            onPressed: () {},
+                            onPressed: () {
+                              context.push("/signUp");
+                            },
                           ),
                         ),
                       ],

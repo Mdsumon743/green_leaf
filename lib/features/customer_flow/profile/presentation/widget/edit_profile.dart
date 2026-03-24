@@ -6,82 +6,170 @@ import 'package:saunders/core/global/custom_button.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/custom_text_form_field.dart';
 import 'package:saunders/core/utils/app_color.dart';
+
+import '../../../../../core/global/curve_clipper.dart';
 class EditProfile extends StatelessWidget {
-   EditProfile({super.key});
+  EditProfile({super.key});
 
   final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Set resizeToAvoidBottomInset to true to handle keyboard overlay
+      resizeToAvoidBottomInset: true,
       body: Stack(
         children: [
+          // ── Background Image ───────────────────────────────────────
           Positioned.fill(
-              child: Opacity(
-                opacity: 0.7,
-                  child: Image.asset(ImagePath.roleBackground, fit: BoxFit.cover,))),
+            child: Opacity(
+              opacity: 0.7,
+              child: Image.asset(
+                ImagePath.roleBackground,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
+          // ── Main Content ───────────────────────────────────────────
           Column(
             children: [
-              SizedBox(height: 52.h,),
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
+              SizedBox(height: 52.h),
+
+              // Custom AppBar Row
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: (){
-                        context.pop();
-                      },
-                      child: Icon(Icons.arrow_back, color: AppColor.white,),
+                      onTap: () => context.pop(),
+                      child: Icon(Icons.arrow_back, color: AppColor.white),
                     ),
-                    SizedBox(width: 100.w,),
-                    CustomText(text: "Edit Profile",textAlign: TextAlign.center,fontSize: 20.sp,fontWeight: FontWeight.w600,color: AppColor.white,)
+                    const Spacer(),
+                    CustomText(
+                      text: "Edit Profile",
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                      color: AppColor.white,
+                    ),
+                    const Spacer(),
+                    SizedBox(width: 24.w), // Balance for the back arrow
                   ],
                 ),
               ),
-              SizedBox(height: 54.h,),
-              Container(
-                height: 450.h,
 
+              SizedBox(height: 54.h),
 
-                padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.h),
-                decoration: BoxDecoration(
+              // ── Curved Gradient Container ──────────────────────────
+              Expanded(
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.85),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.5, 0.8, 1.0],
+                      ),
+                    ),
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Extra space to push content below the curve peak
+                          SizedBox(height: 60.h),
 
-                  color: AppColor.containerBackground,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(50.r),
-                    topLeft: Radius.circular(50.r),
-                    bottomLeft: Radius.circular(10.r),
-                    bottomRight: Radius.circular(10.r),
+                          // Full Name Field
+                          CustomText(
+                            text: "Full Name",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.sp,
+                            color: AppColor.textBody,
+                          ),
+                          SizedBox(height: 12.h),
+                          CustomTextFormField(
+                            controller: nameController,
+                            hintText: "Full Name",
+                            borderRadius: 12.r,
+                          ),
 
-                  )
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CustomText(text: "Full Name", fontWeight: FontWeight.w500,fontSize: 16.sp,textAlign: TextAlign.center,color: AppColor.textBody,),
-                    SizedBox(height: 12.h,),
-                    CustomTextFormField(controller: nameController, hintText: "Full Name"),
-                    SizedBox(height: 16.h,),
-                    CustomText(text: "Email", fontWeight: FontWeight.w500,fontSize: 16.sp,textAlign: TextAlign.center,color: AppColor.textBody,),
-                    SizedBox(height: 12.h,),
-                    CustomTextFormField(controller: nameController, hintText: "abc32@gmail.com"),
-                    SizedBox(height: 16.h,),
-                    CustomText(text: "Phone Number", fontWeight: FontWeight.w500,fontSize: 16.sp,textAlign: TextAlign.center,color: AppColor.textBody,),
-                    SizedBox(height: 12.h,),
-                    CustomTextFormField(controller: nameController, hintText: "+880 1517053529"),
-                    SizedBox(height: 16.h,),
+                          SizedBox(height: 16.h),
 
-                  ],
+                          // Email Field
+                          CustomText(
+                            text: "Email",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.sp,
+                            color: AppColor.textBody,
+                          ),
+                          SizedBox(height: 12.h),
+                          CustomTextFormField(
+                            controller: emailController,
+                            hintText: "abc32@gmail.com",
+                            hintTextColor: Colors.white,
+                            containerColor: Color(0xFF126A19),
+                            textColor: Colors.white,
+                            borderRadius: 12.r,
+                          ),
+
+                          SizedBox(height: 16.h),
+
+                          // Phone Number Field
+                          CustomText(
+                            text: "Phone Number",
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.sp,
+                            color: AppColor.textBody,
+                          ),
+                          SizedBox(height: 12.h),
+                          CustomTextFormField(
+                            controller: phoneController,
+                            hintText: "+880 1517053529",
+                            borderRadius: 12.r,
+                          ),
+
+                          // Ensure there's space at the bottom for scrolling
+                          SizedBox(height: 100.h),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              Spacer(),
-
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: CustomButton(text: "Save Changes", onPressed: (){})),
-              SizedBox(height: 35.h,)
             ],
-          )
+          ),
+
+          // ── Fixed Bottom Button ────────────────────────────────────
+          Positioned(
+            bottom: 35.h,
+            left: 20.w,
+            right: 20.w,
+            child: CustomButton(
+              text: "Save",
+              borderRadius: 12.r,
+              backgroundGradient: LinearGradient(
+                colors: [
+                  Color(0xFF8CC40F),
+                  Color(0xFF126A19),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              onPressed: () {
+                // Handle logic
+              },
+            ),
+          ),
         ],
       ),
     );

@@ -140,11 +140,24 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
         children: [
           // ── Green header background ─────────────────────────────────
           Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              ImagePath.myQuotesDetailsBottumBG,
+              height: 300.h,
+              fit: BoxFit.cover,
+              //opacity: const AlwaysStoppedAnimation(0.1),
+            ),
+          ),
+
+          // 2. THE GREEN HEADER BOX
+          Positioned(
             top: 0,
             left: 0,
             right: 0,
             height: 215.h,
-            child:  DecoratedBox(
+            child: DecoratedBox(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -158,21 +171,17 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
             ),
           ),
 
-          // ── Decorative leaves top-right ─────────────────────────────
+          // 3. TOP BACKGROUND IMAGE (Moved here to be on top of the green box)
           Positioned(
-            top: -10,
-            right: -14,
-            child: Opacity(
-              opacity: 0.28,
-              child: Icon(Icons.eco_rounded, color: Colors.white, size: 130.r),
-            ),
-          ),
-          Positioned(
-            top: 14,
-            right: 68,
-            child: Opacity(
-              opacity: 0.13,
-              child: Icon(Icons.eco_rounded, color: Colors.white, size: 60.r),
+            top: 0,
+            left: 0,
+            right: 0,
+            child: Image.asset(
+              ImagePath.notificationTopBG,
+              height: 215.h, // Match header height
+              fit: BoxFit.cover,
+              // Increase opacity slightly if it's still hard to see
+              //opacity: const AlwaysStoppedAnimation(0.25),
             ),
           ),
 
@@ -222,7 +231,18 @@ class _AllServicesScreenState extends ConsumerState<AllServicesScreen> {
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: Color(0xFFF3FFF0),
+                      //color: Color(0xFFF3FFF0),
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.95),
+                          AppColor.containerBackground.withValues(alpha: 0.85),
+                          Colors.transparent
+                        ],
+                        stops: const [0.0, 0.5, 0.8, 1.0],
+                      )
                     ),
                     child: Column(
                       children: [
@@ -437,7 +457,7 @@ class ServiceCard extends StatelessWidget {
                   Text(
                     service.name,
                     style: TextStyle(
-                      fontSize: 14.sp,
+                      fontSize: 18 .sp,
                       fontWeight: FontWeight.w700,
                       color: AppColor.textDark,
                       height: 1.25,
@@ -780,5 +800,3 @@ class _FilterBottomSheetState extends State<_FilterBottomSheet> {
     );
   }
 }
-
-// ── Entry Point ───────────────────────────────────────────────────────────────

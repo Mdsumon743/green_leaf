@@ -46,4 +46,24 @@ class IconPath {
   static const String customerVisite = '$_basePath/customer_visite.png';
   static const String activeCustomerVisite = '$_basePath/active_customer_visite.png';
 
+  static const String edit = "$_basePath/pencil_edit_02.png";
+  static const String address = "$_basePath/address_book.png";
+  static const String settings = "$_basePath/settings_02.png";
+  static const String keyframesMultiple = "$_basePath/keyframes_multiple.png";
+  static const String userSquare = "$_basePath/user_square.png";
+  static const String starSquare = "$_basePath/star_square.png";
+  static const String gallery = "$_basePath/gallery_02.png";
+  static const String signOutAlt = "$_basePath/la_sign_out_alt.svg";
+
+  static const String currentLocation = "$_basePath/current_location.png";
+  static const String edit04 = "$_basePath/edit-04.png";
+  static const String delete02 = "$_basePath/delete-02.png";
+  static const String lockPassword = "$_basePath/circle_password.png";
+
+  static const String wallet01 = "$_basePath/wallet-01.png";
+  static const String checkmark = "$_basePath/checkmark-badge-01.png";
+
+  static const String filterEdit = "$_basePath/filter-edit.png";
+  //end adding by Lisan
+
 }

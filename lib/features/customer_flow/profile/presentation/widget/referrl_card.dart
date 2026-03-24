@@ -23,10 +23,10 @@ class ReferralCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: Colors.grey[200]!,
+          color: Color(0xFF36B840).withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
@@ -39,28 +39,6 @@ class ReferralCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Avatar
-          Container(
-            height: 48.h,
-            width: 48.w,
-            decoration: BoxDecoration(
-              color: Color(0xFFE8F5E9),
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              child: Text(
-                name.substring(0, 1).toUpperCase(),
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: Color(0xFF2D5F3C),
-                ),
-              ),
-            ),
-          ),
-
-          SizedBox(width: 12.w),
-
           // Name and Date
           Expanded(
             child: Column(
@@ -91,20 +69,20 @@ class ReferralCard extends StatelessWidget {
                 text: amount,
                 fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF10B981),
+                color: Colors.black,
               ),
               SizedBox(height: 4.h),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Color(0xFFD1FAE5),
-                  borderRadius: BorderRadius.circular(12.r),
+                  color: Color(0xFF126A19).withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(4.r),
                 ),
                 child: CustomText(
                   text: status,
                   fontSize: 12.sp,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF10B981),
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF188220),
                 ),
               ),
             ],

@@ -9,6 +9,8 @@ import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 
+import '../../../../../core/utils/app_color.dart';
+
 
 
 // ── Models ────────────────────────────────────────────────────────────────────
@@ -136,78 +138,70 @@ class InvoiceScreen extends ConsumerWidget {
     final filteredInvoices = ref.watch(filteredInvoicesProvider);
 
     return Scaffold(
-      backgroundColor: _C.scaffoldBg,
       body: Stack(
         fit: StackFit.expand,
         children: [
           /// 1. TOP BACKGROUND IMAGE
-          Align(
-            alignment: Alignment.topCenter,
-            child: Image.asset(
-              ImagePath.notificationTopBG, // Replace with your top image path
-              width: double.infinity,
-              fit: BoxFit.fitWidth,
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                ImagePath.roleBackground, // Consistent background
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
-          /// 2. BOTTOM BACKGROUND IMAGE (Garden/Bottom)
+          /// 2. BOTTOM BACKGROUND IMAGE (Garden)
           Align(
             alignment: Alignment.bottomCenter,
             child: Image.asset(
-              ImagePath.myQuotesDetailsBottumBG, // Replace with your bottom image path
+              ImagePath.myQuotesDetailsBottumBG,
               width: double.infinity,
               fit: BoxFit.fitWidth,
             ),
           ),
 
-          /// 3. DARK OVERLAY (Optional - matches your previous screens)
-          Container(
-            color: Colors.black.withValues(alpha: 0.3),
-          ),
-
-          /// 4. MAIN CONTENT
+          /// 3. MAIN UI
           Column(
             children: [
-              // AppBar
-              SafeArea(
-                bottom: false,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () => context.pop(),
-                        child: Container(
-                          width: 34.w,
-                          height: 34.h,
-                          alignment: Alignment.center,
-                          child: Image.asset(
-                            IconPath.arrowLeft,
-                            height: 24.h,
-                            width: 24.h,
-                          ),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
+              // AppBar (Centered Title)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.w),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => context.pop(),
+                      child: Container(
+                        width: 34.w,
+                        height: 34.h,
+                        alignment: Alignment.center,
+                        child: Image.asset(
+                          IconPath.arrowLeft,
+                          height: 24.h,
+                          width: 24.w,
                         ),
                       ),
-                      Expanded(
-                        child: Text(
-                          'Invoice & Earning',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 19.sp,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 34.w),
-                    ],
-                  ),
+                    ),
+                    const Spacer(),
+                    CustomText(
+                      text: 'Invoice & Earning',
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                    const Spacer(),
+                    SizedBox(width: 34.w), // Balance for back icon
+                  ],
                 ),
               ),
 
-              SizedBox(height: 14.h),
+              SizedBox(height: 25.h),
 
-              // ── Main Scrolling Sheet ──
+              // ── Curved Content Area ──
               Expanded(
                 child: ClipPath(
                   clipper: CurveClipper(),
@@ -218,58 +212,46 @@ class InvoiceScreen extends ConsumerWidget {
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          _C.scaffoldBg,
-                          _C.scaffoldBg,
+                          AppColor.containerBackground, // Consistent mint/white
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.8),
                           Colors.transparent,
                         ],
-                        stops: const [0.0, 0.9, 1.0],
+                        stops: const [0.0, 0.7, 0.8, 1.0],
                       ),
                     ),
-                    child: ShaderMask(
-                      shaderCallback: (Rect bounds) {
-                        return LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.white,
-                            Colors.white,
-                            Colors.transparent,
-                          ],
-                          stops: const [0.0, 0.85, 1.0],
-                        ).createShader(bounds);
-                      },
-                      blendMode: BlendMode.dstIn,
-                      child: Column(
-                        children: [
-                          // ── Total Balance card ──
-                          Container(
-                            margin: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 0),
-                            child: _TotalBalanceCard(),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 60.h), // Offset for curve peak
+
+                        // ── Total Balance card ──
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: _TotalBalanceCard(),
+                        ),
+
+                        SizedBox(height: 16.h),
+
+                        // ── Tabs ──
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.w),
+                          child: _TabBar(selectedTab: selectedTab, ref: ref),
+                        ),
+
+                        SizedBox(height: 14.h),
+
+                        // ── Invoice list ──
+                        Expanded(
+                          child: filteredInvoices.isEmpty
+                              ? _EmptyState()
+                              : ListView.separated(
+                            padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 100.h),
+                            itemCount: filteredInvoices.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                            itemBuilder: (_, i) => _InvoiceCard(invoice: filteredInvoices[i]),
                           ),
-
-                          SizedBox(height: 16.h),
-
-                          // ── Tabs ──
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 16.w),
-                            child: _TabBar(selectedTab: selectedTab, ref: ref),
-                          ),
-
-                          SizedBox(height: 14.h),
-
-                          // ── Invoice list ──
-                          Expanded(
-                            child: filteredInvoices.isEmpty
-                                ? _EmptyState()
-                                : ListView.separated(
-                              padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 100.h),
-                              itemCount: filteredInvoices.length,
-                              separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                              itemBuilder: (_, i) => _InvoiceCard(invoice: filteredInvoices[i]),
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -282,56 +264,53 @@ class InvoiceScreen extends ConsumerWidget {
   }
 }
 
-// ── Total Balance Card ─────────────────────────────────────────────────────────
-
+// ── Total Balance Card ──
 class _TotalBalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+      padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
-        color: Color(0xFF126A19),
+        color: const Color(0xFF126A19),
         borderRadius: BorderRadius.circular(14.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          )
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomText(
                 text: 'Total Balance',
-
-                  fontSize: 13.sp,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w400,
-
+                fontSize: 14.sp,
+                color: Colors.white.withValues(alpha: 0.8),
               ),
-              Spacer(),
               CustomText(
-                text:  '£150.00',
-
-                fontSize: 28.sp,
+                text: '£150.00',
+                fontSize: 26.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
-
               ),
             ],
           ),
-          SizedBox(height: 4.h),
-
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
           Container(
             height: 1,
             color: Colors.white.withValues(alpha: 0.2),
           ),
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
           CustomText(
-           text:  'Last Payment: €30.00 Paid on 5th july',
-
-              fontSize: 12.sp,
-              color: Colors.white,
-
+            text: 'Last Payment: £30.00 Paid on 5th July',
+            fontSize: 12.sp,
+            color: Colors.white.withValues(alpha: 0.9),
           ),
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 
 import '../../../../../core/constants/image_path.dart';
 import '../../../../../core/global/custom_button.dart';
@@ -83,60 +84,69 @@ class AddressManagement extends StatelessWidget {
 
               // Main content area
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.only(
-                    top: 24.h,
-                    left: 20.w,
-                    right: 20.w,
-                  ),
-                  decoration: BoxDecoration(
-                    // Semi-transparent white background for the top portion
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColor.containerBackground.withOpacity(0.95),
-                        AppColor.containerBackground.withOpacity(0.7),
-                        Colors.transparent,
-                      ],
-                      stops: [0.0, 0.6, 1.0],
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    padding: EdgeInsets.only(
+                      top: 32.h,
+                      left: 20.w,
+                      right: 20.w,
                     ),
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(50.r),
-                      topLeft: Radius.circular(50.r),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      // Address list
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: addresses.length,
-                        separatorBuilder: (context, index) => SizedBox(height: 12.h),
-                        itemBuilder: (context, index) {
-                          final address = addresses[index];
-                          return AddressCard(
-                            title: address['title'] as String,
-                            address: address['address'] as String,
-                            isDefault: address['isDefault'] as bool,
-                          );
-                        },
+                    decoration: BoxDecoration(
+                      // Semi-transparent white background for the top portion
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withOpacity(0.7),
+                          Colors.transparent,
+                        ],
+                        stops: [0.0, 0.6, 0.8, 1.0],
                       ),
-
-                      Spacer(),
-
-                      // Add New Address button
-                      Container(
-                        margin: EdgeInsets.only(bottom: 35.h),
-                        child: CustomButton(
-                          text: "Add New Address",
-                          onPressed: () {
-                            context.push('/addAddress');
+                    ),
+                    child: Column(
+                      children: [
+                        // Address list
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: addresses.length,
+                          separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                          itemBuilder: (context, index) {
+                            final address = addresses[index];
+                            return AddressCard(
+                              title: address['title'] as String,
+                              address: address['address'] as String,
+                              isDefault: address['isDefault'] as bool,
+                            );
                           },
                         ),
-                      ),
-                    ],
+
+                        Spacer(),
+
+                        // Add New Address button
+                        Container(
+                          margin: EdgeInsets.only(bottom: 35.h),
+                          child: CustomButton(
+                            borderRadius: 8.r,
+                            backgroundGradient: LinearGradient(
+                              colors: [
+                                Color(0xFF8CC40F),
+                                Color(0xFF126A19),
+                              ],
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                            ),
+                            text: "Add New Address",
+                            onPressed: () {
+                              context.push('/addAddress');
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

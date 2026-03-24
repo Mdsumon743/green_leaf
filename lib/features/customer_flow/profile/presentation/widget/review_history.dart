@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:saunders/core/constants/icon_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart'; // Ensure this is imported
 import '../../../../../core/constants/image_path.dart';
 import '../../../../../core/global/custom_text.dart';
 import '../../../../../core/utils/app_color.dart';
 import '../../provider/review_provider.dart';
-
-
-
 
 class ReviewHistory extends ConsumerWidget {
   const ReviewHistory({super.key});
@@ -20,94 +19,90 @@ class ReviewHistory extends ConsumerWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Background image
+          // ── Background image ───────────────────────────────────────
           Positioned.fill(
             child: Image.asset(
-              ImagePath.quoteBackground,
+              ImagePath.roleBackground, // Consistent background
               fit: BoxFit.cover,
             ),
           ),
 
           Column(
             children: [
-              // Header
-              Container(
-                padding: EdgeInsets.only(
-                  top: 50.h,
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 20.h,
-                ),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
+              // ── Header (Centered Title) ──────────────────────────────
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        context.pop();
-                      },
+                      onTap: () => context.pop(),
                       child: Icon(
                         Icons.arrow_back,
                         color: Colors.white,
                         size: 24.sp,
                       ),
                     ),
-                    SizedBox(width: 50.w),
-                    Text(
-                      'Reviews History',
-                      style: TextStyle(
-                        fontSize: 20.sp,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+                    const Spacer(),
+                    CustomText(
+                      text: 'Reviews History',
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
+                    const Spacer(),
+                    SizedBox(width: 24.w), // Balance for back icon
                   ],
                 ),
               ),
 
-              // Content area with gradient
+              SizedBox(height: 30.h),
+
+              // ── Curved Content Area ──────────────────────────────────
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.only(
-                    top: 32.h,
-                    left: 20.w,
-                    right: 20.w,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white,
-                        Colors.white.withOpacity(0.95),
-                        Colors.white.withOpacity(0.7),
-                        Colors.transparent,
-                      ],
-                      stops: [0.0, 0.5, 0.8, 1.0],
+                child: ClipPath(
+                  clipper: CurveClipper(), // Applied here
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withOpacity(0.85),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.4, 0.7, 1.0],
+                      ),
                     ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
+                    child: ListView.separated(
+                      padding: EdgeInsets.only(
+                        top: 60.h, // Space for the curve peak
+                        left: 20.w,
+                        right: 20.w,
+                        bottom: 100.h,
+                      ),
+                      itemCount: reviews.length,
+                      separatorBuilder: (context, index) => SizedBox(height: 16.h),
+                      itemBuilder: (context, index) {
+                        final review = reviews[index];
+                        return ReviewCard(
+                          serviceName: review.serviceName,
+                          date: review.date,
+                          rating: review.rating,
+                          comment: review.comment,
+                          onEdit: () {
+                            // Handle edit action
+                          },
+                          onDelete: () {
+                            // Handle delete action
+                          },
+                        );
+                      },
                     ),
-                  ),
-                  child: ListView.separated(
-                    padding: EdgeInsets.only(bottom: 100.h),
-                    itemCount: reviews.length,
-                    separatorBuilder: (context, index) => SizedBox(height: 16.h),
-                    itemBuilder: (context, index) {
-                      final review = reviews[index];
-                      return ReviewCard(
-                        serviceName: review.serviceName,
-                        date: review.date,
-                        rating: review.rating,
-                        comment: review.comment,
-                        onEdit: () {
-                          // Handle edit action
-                        },
-                        onDelete: () {
-                          // Handle delete action
-                        },
-                      );
-                    },
                   ),
                 ),
               ),
@@ -144,22 +139,17 @@ class ReviewCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(
-          color: Color(0xFF055726),
-          width: 1,
-        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 8,
-            offset: Offset(0, 2),
+            color: Colors.black.withOpacity(0.04), // Softer shadow
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header with service name and actions
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -176,9 +166,9 @@ class ReviewCard extends StatelessWidget {
                     SizedBox(height: 4.h),
                     CustomText(
                       text: date,
-                      fontSize: 13.sp,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w400,
-                      color: Color(0xFF9CA3AF),
+                      color: const Color(0xFF9098A1),
                     ),
                   ],
                 ),
@@ -187,48 +177,40 @@ class ReviewCard extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: onEdit,
-                    child: Icon(
-                      Icons.edit_outlined,
-                      size: 20.sp,
-                      color: Color(0xFF055726),
+                    child: Container(
+                      padding: EdgeInsets.all(6.r),
+                      child: Image.asset(IconPath.edit04,height: 24.h,width: 24.w,)
                     ),
                   ),
-                  SizedBox(width: 12.w),
+                  SizedBox(width: 8.w),
                   GestureDetector(
                     onTap: onDelete,
-                    child: Icon(
-                      Icons.delete_outline,
-                      size: 20.sp,
-                      color: Colors.red,
+                    child: Container(
+                      padding: EdgeInsets.all(6.r),
+                      child: Image.asset(IconPath.delete02,height: 24.h,width: 24.h,),
                     ),
                   ),
                 ],
               ),
             ],
           ),
-
           SizedBox(height: 12.h),
-
-          // Star Rating
           Row(
             children: List.generate(5, (index) {
               return Icon(
                 index < rating ? Icons.star : Icons.star_border,
-                size: 20.sp,
-                color: Color(0xFFFFC107),
+                size: 18.sp,
+                color: const Color(0xFFFFC107),
               );
             }),
           ),
-
-          SizedBox(height: 12.h),
-
-          // Review Comment
+          SizedBox(height: 10.h),
           CustomText(
             text: comment,
-            fontSize: 14.sp,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w400,
-            color: Color(0xFF6B7280),
-            maxLines: 3,
+            color: const Color(0xFF455A64),
+            maxLines: 4,
           ),
         ],
       ),

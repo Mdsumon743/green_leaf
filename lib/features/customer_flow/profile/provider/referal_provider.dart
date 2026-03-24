@@ -1,11 +1,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:saunders/core/constants/icon_path.dart';
 
 class ReferralStat {
   final String title;
   final String value;
-  final IconData icon;
+  final String icon;
 
   ReferralStat({
     required this.title,
@@ -34,12 +35,12 @@ final referralStatsProvider = Provider<List<ReferralStat>>((ref) {
     ReferralStat(
       title: 'Total Earned',
       value: '€10',
-      icon: Icons.wallet_outlined,
+      icon: IconPath.wallet01,
     ),
     ReferralStat(
       title: 'Successful Referrals',
       value: '01',
-      icon: Icons.check_circle_outline,
+      icon: IconPath.checkmark,
     ),
   ];
 });

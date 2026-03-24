@@ -118,9 +118,9 @@ class HomeScreen extends StatelessWidget  {
                         end: Alignment.bottomCenter,
                         colors: [
                           AppColor.containerBackground,
-                          AppColor.containerBackground.withValues(alpha: 0.95),
+                          AppColor.containerBackground,
                           AppColor.containerBackground.withValues(alpha: 0.85),
-                          AppColor.containerBackground.withValues(alpha: 0.75),
+                          Colors.transparent
                         ],
                         stops: const [0.0, 0.5, 0.8, 1.0],
                       ),

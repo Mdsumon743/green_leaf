@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart'; // Import your clipper
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/show_custom_dialog.dart';
 import 'package:saunders/core/utils/app_color.dart';
@@ -27,186 +29,145 @@ class _SystemSettingState extends State<SystemSetting> {
           // Background image
           Positioned.fill(
             child: Image.asset(
-              ImagePath.quoteBackground,
+              ImagePath.roleBackground, // Using background from image_c92ec0.png
               fit: BoxFit.cover,
             ),
           ),
 
           Column(
             children: [
-              SizedBox(height: 50.h),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
 
               // Header
-              Container(
-                margin: EdgeInsets.symmetric(horizontal: 20.w),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        context.pop();
-                      },
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: AppColor.white,
-                        size: 24.sp,
-                      ),
+                      onTap: () => context.pop(),
+                      child: Icon(Icons.arrow_back, color: AppColor.white, size: 24.sp),
                     ),
-                    SizedBox(width: 100.w),
+                    const Spacer(),
                     CustomText(
                       text: "Setting",
                       fontWeight: FontWeight.w600,
                       color: AppColor.white,
                       fontSize: 20.sp,
                     ),
+                    const Spacer(),
+                    SizedBox(width: 24.w),
                   ],
                 ),
               ),
 
               SizedBox(height: 30.h),
 
-              // Main content
+              // Main content with CurveClipper
               Expanded(
-                child: Container(
-                  width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 24.h),
-                  decoration: BoxDecoration(
-                    color: AppColor.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50.r),
-                      topRight: Radius.circular(50.r),
+                child: ClipPath(
+                  clipper: CurveClipper(),
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.85),
+                          Colors.transparent
+                        ],
+                        stops: const [0.0, 0.6, 0.8, 1.0],
+                      ),
                     ),
-                  ),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Notifications Section
-                        _buildSectionHeader(
-                          icon: Icons.notifications_outlined,
-                          title: "Notifications",
-                        ),
+                    child: SingleChildScrollView(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 60.h), // Space for the curve peak
 
-                        SizedBox(height: 16.h),
-
-                        // Email Notifications
-                        _buildToggleItem(
-                          title: "Email Notifications",
-                          value: emailNotifications,
-                          onChanged: (val) {
-                            setState(() {
-                              emailNotifications = val;
-                            });
-                          },
-                        ),
-
-                        SizedBox(height: 12.h),
-
-                        // SMS Notification
-                        _buildToggleItem(
-                          title: "SMS Notification",
-                          value: smsNotification,
-                          onChanged: (val) {
-                            setState(() {
-                              smsNotification = val;
-                            });
-                          },
-                        ),
-
-                        SizedBox(height: 12.h),
-
-                        // Push Notifications
-                        _buildToggleItem(
-                          title: "Push Notifications",
-                          value: pushNotifications,
-                          onChanged: (val) {
-                            setState(() {
-                              pushNotifications = val;
-                            });
-                          },
-                        ),
-
-                        SizedBox(height: 32.h),
-
-                        // Password Section
-                        _buildSectionHeader(
-                          icon: Icons.lock_outline,
-                          title: "Password",
-                        ),
-
-                        SizedBox(height: 16.h),
-
-                        // Change Password Button
-                        GestureDetector(
-                          onTap: (){
-                            context.push("/changePassword");
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 52.h,
-                            decoration: BoxDecoration(
-                              color: Color(0xFFD4E7D7),
-                              borderRadius: BorderRadius.circular(12.r),
+                          // 1. NOTIFICATIONS GROUP
+                          _buildWhiteGroupCard([
+                            _buildSectionHeader(
+                              icon: IconPath.notification,
+                              title: "Notifications",
+                              iconColor: const Color(0xFF126A19),
+                              textColor: Color(0xFF2D2D2D)
                             ),
-                            child: Center(
-                              child: CustomText(
-                                text: "Change Password",
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF2D5F3C),
-                              ),
+                            Divider(),
+                            _buildToggleItem("Email Notifications", emailNotifications, (val) {
+                              setState(() => emailNotifications = val);
+                            }),
+                            Divider(),
+                            _buildToggleItem("SMS Notification", smsNotification, (val) {
+                              setState(() => smsNotification = val);
+                            }),
+                            Divider(),
+                            _buildToggleItem("Push Notifications", pushNotifications, (val) {
+                              setState(() => pushNotifications = val);
+                            }),
+                          ]),
+
+                          SizedBox(height: 20.h),
+
+                          // 2. PASSWORD GROUP
+                          _buildWhiteGroupCard([
+                            _buildSectionHeader(
+                              icon: IconPath.lockPassword,
+                              title: "Password",
+                              iconColor: const Color(0xFF126A19),
                             ),
-                          ),
-                        ),
+                            const Divider(height: 24),
+                            _buildActionButton(
+                              text: "Change Password",
+                              color: const Color(0xFFD4E7D7),
+                              textColor: const Color(0xFF126A19),
+                              onTap: () => context.push("/changePassword"),
+                            ),
+                          ]),
 
-                        SizedBox(height: 32.h),
+                          SizedBox(height: 20.h),
 
-                        // Danger Zone Section
-                        _buildSectionHeader(
-                          icon: Icons.delete_outline,
-                          title: "Danger Zone",
-                          iconColor: Colors.red,
-                          textColor: Colors.red,
-                        ),
-
-                        SizedBox(height: 12.h),
-
-                        // Warning Text
-                        CustomText(
-                          text: "Once you delete your account, there is no going back. Please be certain.",
-                          fontSize: 13.sp,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.red,
-                          maxLines: 3,
-                        ),
-
-                        SizedBox(height: 16.h),
-
-                        // Delete Account Button
-                        GestureDetector(
-                          onTap: (){
-                            showCustomDialog(context, imagePath: IconPath.deleteConfirmation, title: "Are You Sure?", buttonText: "Delete", message: "Do you want to Delete Account?",
-                            isDoubleButton: true, secondButtonText: "cancel", onPressed: (){}, onSecondPressed: (){
-                              context.pop();
-                                });
-                          },
-                          child: Container(
-                            width: double.infinity,
-                            height: 52.h,
-                            decoration: BoxDecoration(
+                          // 3. DANGER ZONE GROUP
+                          _buildWhiteGroupCard([
+                            _buildSectionHeader(
+                              icon: IconPath.delete02,
+                              title: "Danger Zone",
+                              iconColor: Colors.red,
+                              textColor: Colors.red,
+                            ),
+                            const Divider(height: 24),
+                            CustomText(
+                              text: "Once you delete your account, there is no going back. Please be certain.",
+                              fontSize: 13.sp,
                               color: Colors.red,
-                              borderRadius: BorderRadius.circular(12.r),
+                              maxLines: 2,
                             ),
-                            child: Center(
-                              child: CustomText(
-                                text: "Delete Account",
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w600,
-                                color: AppColor.white,
-                              ),
+                            SizedBox(height: 16.h),
+                            _buildActionButton(
+                              text: "Delete Account",
+                              color: Colors.red,
+                              textColor: Colors.white,
+                              onTap: () {
+                                showCustomDialog(
+                                  context,
+                                  imagePath: IconPath.confirmation,
+                                  title: "Are You Sure?",
+                                  message: "Do you want to Delete Account?",
+                                  buttonText: "Delete",
+                                  isDoubleButton: true,
+                                  secondButtonText: "Cancel",
+                                  onPressed: () {},
+                                  onSecondPressed: () => context.pop(),
+                                );
+                              },
                             ),
-                          ),
-                        ),
-                      ],
+                          ]),
+
+                          SizedBox(height: 100.h), // Bottom padding for fade
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -218,59 +179,101 @@ class _SystemSettingState extends State<SystemSetting> {
     );
   }
 
+  // Helper for the white card containers
+  Widget _buildWhiteGroupCard(List<Widget> children) {
+    return Container(
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+
   Widget _buildSectionHeader({
-    required IconData icon,
+    required String icon,
     required String title,
     Color? iconColor,
-    Color? textColor,
+    Color? textColor
   }) {
+    final bool isSvg = icon.toLowerCase().endsWith('.svg'); // Check type
+
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 22.sp,
-          color: iconColor ?? Color(0xFF2D5F3C),
+        SizedBox(
+          height: 24.h,
+          width: 24.w,
+          child: isSvg
+              ? SvgPicture.asset( // Requires flutter_svg package
+            icon,
+            colorFilter: iconColor != null
+                ? ColorFilter.mode(iconColor, BlendMode.srcIn)
+                : null,
+          )
+              : Image.asset(
+            icon,
+            color: iconColor,
+          ),
         ),
         SizedBox(width: 8.w),
         CustomText(
-          text: title,
-          fontSize: 16.sp,
-          fontWeight: FontWeight.w600,
-          color: textColor ?? AppColor.textBody,
+            text: title,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w400,
+            color: textColor ?? const Color(0xFF2D3E50)
         ),
       ],
     );
   }
-
-  Widget _buildToggleItem({
-    required String title,
-    required bool value,
-    required Function(bool) onChanged,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
-      decoration: BoxDecoration(
-        color: Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
+  Widget _buildToggleItem(String title, bool value, Function(bool) onChanged) {
+    return Padding(
+      // Set vertical to 0 or very small (2.h) to collapse space
+      padding: EdgeInsets.symmetric(vertical: 0.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           CustomText(
             text: title,
             fontSize: 15.sp,
-            fontWeight: FontWeight.w500,
-            color: AppColor.textBody,
+            color: const Color(0xFF2D2D2D),
+            fontWeight: FontWeight.w400,
           ),
-          Switch(
-            value: value,
-            onChanged: onChanged,
-            activeThumbColor: Color(0xFF4CAF50),
-            activeTrackColor: Color(0xFF81C784),
-            inactiveThumbColor: Colors.grey[400],
-            inactiveTrackColor: Colors.grey[300],
+          Transform.scale(
+            scale: 0.75, // Slightly smaller switch to match image_c99b5f
+            child: Switch(
+              value: value,
+              onChanged: onChanged,
+              activeColor: const Color(0xFFFFFFFF),
+              activeTrackColor: const Color(0xFF126A19),
+              inactiveThumbColor: const Color(0xFF9098A1),
+              inactiveTrackColor: const Color(0xFFE0E0E6),
+              // --- Custom Colors End ---
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
           ),
         ],
+      ),
+    );
+  }
+  Widget _buildActionButton({required String text, required Color color, required Color textColor, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(vertical: 14.h),
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12.r)),
+        child: Center(child: CustomText(text: text, fontSize: 16.sp, fontWeight: FontWeight.w600, color: textColor)),
       ),
     );
   }

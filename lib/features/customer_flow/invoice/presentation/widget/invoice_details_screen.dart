@@ -16,12 +16,17 @@ class InvoiceDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
           // ── 1. Top Background ──
           Positioned.fill(
-            child: Image.asset(
-              ImagePath.quoteBackground,
-              fit: BoxFit.cover,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                ImagePath.roleBackground, // Consistent with previous screens
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
@@ -38,137 +43,124 @@ class InvoiceDetailsScreen extends StatelessWidget {
           // ── 3. Main UI ──
           Column(
             children: [
-              // Header (AppBar)
-              Container(
-                padding: EdgeInsets.only(top: 50.h, left: 20.w, right: 20.w, bottom: 20.h),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
+              // Header (Centered Title)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
                   children: [
                     GestureDetector(
                       onTap: () => context.pop(),
                       child: Icon(Icons.arrow_back, color: Colors.white, size: 24.sp),
                     ),
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          'View Details',
-                          style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600, color: Colors.white),
-                        ),
-                      ),
+                    const Spacer(),
+                    CustomText(
+                      text: 'View Details',
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
-                    SizedBox(width: 24.sp),
+                    const Spacer(),
+                    SizedBox(width: 24.w), // Balance for back icon
                   ],
                 ),
               ),
 
-              // ── 4. The Fading White Sheet ──
+              SizedBox(height: 25.h),
+
+              // ── 4. Curved Content Area ──
               Expanded(
                 child: ClipPath(
                   clipper: CurveClipper(),
                   child: Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      // Apply the fade to the container background itself
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
                         colors: [
-                          Colors.white,
-                          Colors.white,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.8),
                           Colors.transparent,
                         ],
-                        stops: const [0.0, 0.75, 1.0],
+                        stops: const [0.0, 0.4, 0.7, 1.0],
                       ),
                     ),
                     child: Column(
                       children: [
-                        // Scrollable Area with ShaderMask
                         Expanded(
-                          child: ShaderMask(
-                            shaderCallback: (Rect bounds) {
-                              return LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [Color(0xFFEDFFE8), Color(0xFFEDFFE8), Colors.transparent],
-                                stops: const [0.0, 0.8, 1.0],
-                              ).createShader(bounds);
-                            },
-                            blendMode: BlendMode.dstIn,
-                            child: SingleChildScrollView(
-                              padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 20.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: 24.h),
-                                        Container(
-                                            padding: EdgeInsets.all(16.r),
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFF36B840).withValues(alpha: 0.2),
-                                              borderRadius: BorderRadius.circular(5.r),
-                                              border: Border.all(color: const Color(0xFF36B840).withValues(alpha: 0.3)),
-                                            ),
-                                            child: Image.asset(IconPath.invoice3, height: 20.h, width: 20.h)),
-                                        SizedBox(height: 12.h),
-                                        CustomText(text: "Invoice: #1024", fontSize: 18.sp, fontWeight: FontWeight.w700, color: AppColor.textBody),
-                                        CustomText(text: "Garden Maintenance", fontSize: 14.sp, color: AppColor.textBody.withValues(alpha: 0.6)),
-                                      ],
-                                    ),
+                          child: SingleChildScrollView(
+                            padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 20.h),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          padding: EdgeInsets.all(16.r),
+                                          decoration: BoxDecoration(
+                                            color: const Color(0xFF36B840).withValues(alpha: 0.1),
+                                            shape: BoxShape.circle, // Circular icon container
+                                            border: Border.all(color: const Color(0xFF36B840).withValues(alpha: 0.2)),
+                                          ),
+                                          child: Image.asset(IconPath.invoice3, height: 24.h, width: 24.h)),
+                                      SizedBox(height: 16.h),
+                                      CustomText(
+                                        text: "Invoice: #1024",
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColor.textBody,
+                                      ),
+                                      CustomText(
+                                        text: "Garden Maintenance",
+                                        fontSize: 14.sp,
+                                        color: AppColor.textBody.withValues(alpha: 0.6),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 32.h),
-                                  _DetailRow(label: "Total Price", value: "€ 120.00", isPrice: true),
-                                  SizedBox(height: 18.h),
-                                  _DottedDivider(color: AppColor.primary),
-                                  SizedBox(height: 18.h),
-                                  _DetailRow(label: "Due Date", value: "Jan 15, 2026"),
-                                  SizedBox(height: 18.h),
-                                  _DottedDivider(color: AppColor.primary),
-                                  SizedBox(height: 18.h),
-                                  _StatusRow(label: "Status", value: "paid"),
-                                  SizedBox(height: 18.h),
-                                  _DottedDivider(color: AppColor.primary),
-                                ],
-                              ),
+                                ),
+                                SizedBox(height: 40.h),
+                                _DetailRow(label: "Total Price", value: "£ 120.00", isPrice: true),
+                                SizedBox(height: 18.h),
+                                _DottedDivider(color: AppColor.primary.withValues(alpha: 0.3)),
+                                SizedBox(height: 18.h),
+                                _DetailRow(label: "Due Date", value: "Jan 15, 2026"),
+                                SizedBox(height: 18.h),
+                                _DottedDivider(color: AppColor.primary.withValues(alpha: 0.3)),
+                                SizedBox(height: 18.h),
+                                _StatusRow(label: "Status", value: "Paid"),
+                                SizedBox(height: 18.h),
+                                _DottedDivider(color: AppColor.primary.withValues(alpha: 0.3)),
+                              ],
                             ),
                           ),
                         ),
 
-                        // Sticky Button Area (Transparent to allow fade background to show)
-                        Container(
+                        // Pay Now Button
+                        Padding(
                           padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 40.h),
-                          decoration: const BoxDecoration(color: Colors.transparent),
-                          child: Container( // Outer container to hold the gradient
-                            width: double.infinity,
-                            height: 52.h,
-                            decoration: BoxDecoration(
-                              // --- GRADIENT CONFIGURATION ---
-                              gradient: LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Color(0xFF8CC40F),
-                                  Color(0xFF126A19)
+                          child: GestureDetector(
+                            onTap: () => context.push("/paymentMethods"),
+                            child: Container(
+                              width: double.infinity,
+                              height: 54.h,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [Color(0xFF8CC40F), Color(0xFF126A19)],
+                                ),
+                                borderRadius: BorderRadius.circular(12.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: const Color(0xFF126A19).withValues(alpha: 0.2),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
                                 ],
-                              ),
-                              borderRadius: BorderRadius.circular(10.r),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: AppColor.primary.withValues(alpha: 0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: ElevatedButton(
-                              onPressed: () => context.push("/paymentMethods"),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.transparent, // Make button transparent to show gradient
-                                shadowColor: Colors.transparent,     // Remove default shadow
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.r),
-                                ),
-                                elevation: 0,
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -179,12 +171,8 @@ class InvoiceDetailsScreen extends StatelessWidget {
                                     fontSize: 16.sp,
                                     fontWeight: FontWeight.w700,
                                   ),
-                                  SizedBox(width: 8.w),
-                                  Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: Colors.white,
-                                    size: 14.sp, // Slightly smaller icon usually looks cleaner
-                                  ),
+                                  SizedBox(width: 10.w),
+                                  Icon(Icons.arrow_forward_ios, color: Colors.white, size: 14.sp),
                                 ],
                               ),
                             ),

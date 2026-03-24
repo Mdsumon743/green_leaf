@@ -12,7 +12,7 @@ class CustomTextFormField extends StatelessWidget {
   final String? prefixIconPath;
   final Widget? prefixIcon;
   final double? prefixIconSize;
-  final EdgeInsetsGeometry? prefixIconPadding; // New property
+  final EdgeInsetsGeometry? prefixIconPadding;
   final ValueChanged<String>? onChanged;
   final bool readonly;
   final bool obscureText;
@@ -24,11 +24,17 @@ class CustomTextFormField extends StatelessWidget {
   final int maxLines;
   final Color? containerColor;
   final Color? hintTextColor;
+  final Color? textColor;
   final double? hintTextSize;
   final String? suffixText;
   final TextStyle? suffixTextStyle;
   final String? Function(String?)? validator;
   final double? borderRadius;
+
+  // --- New Shadow Properties ---
+  final Color? shadowColor;
+  final double? blurRadius;
+  final Offset? shadowOffset;
 
   const CustomTextFormField({
     super.key,
@@ -38,7 +44,7 @@ class CustomTextFormField extends StatelessWidget {
     this.prefixIconPath,
     this.prefixIcon,
     this.prefixIconSize,
-    this.prefixIconPadding, // Added to constructor
+    this.prefixIconPadding,
     this.onChanged,
     this.readonly = false,
     this.obscureText = false,
@@ -50,11 +56,16 @@ class CustomTextFormField extends StatelessWidget {
     this.maxLines = 1,
     this.containerColor,
     this.hintTextColor = AppColor.profileTextColor,
+    this.textColor,
     this.hintTextSize = 15,
     this.suffixText,
     this.suffixTextStyle,
     this.validator,
     this.borderRadius,
+    // --- New shadow defaults ---
+    this.shadowColor,
+    this.blurRadius,
+    this.shadowOffset,
   });
 
   @override
@@ -64,7 +75,9 @@ class CustomTextFormField extends StatelessWidget {
     final Color effectiveFillColor = containerColor ??
         (isDarkMode ? const Color(0xff282828) : Colors.white);
 
-    // Standardize the padding for the prefix icon
+    final Color effectiveTextColor = textColor ??
+        (isDarkMode ? AppColor.white : AppColor.headerColor);
+
     final EdgeInsetsGeometry effectivePrefixPadding =
         prefixIconPadding ?? EdgeInsets.symmetric(horizontal: 12.w);
 
@@ -73,10 +86,11 @@ class CustomTextFormField extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadius?.r ?? 8.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 6,
+            // Use provided color or a soft subtle black by default
+            color: shadowColor ?? Colors.black.withOpacity(0.06),
+            blurRadius: blurRadius ?? 10.r,
             spreadRadius: 0,
-            offset: const Offset(0, 3),
+            offset: shadowOffset ?? const Offset(0, 4),
           ),
         ],
       ),
@@ -93,18 +107,15 @@ class CustomTextFormField extends StatelessWidget {
         style: GoogleFonts.poppins(
           fontSize: 16.sp,
           fontWeight: FontWeight.w400,
-          color: isDarkMode ? AppColor.white : AppColor.headerColor,
+          color: effectiveTextColor,
         ),
         decoration: InputDecoration(
           filled: true,
           fillColor: effectiveFillColor,
 
-          // --- Prefix Icon Logic with Custom Padding ---
+          // Prefix and Suffix icon logic stays same...
           prefixIcon: prefixIcon != null
-              ? Padding(
-            padding: effectivePrefixPadding,
-            child: prefixIcon,
-          )
+              ? Padding(padding: effectivePrefixPadding, child: prefixIcon)
               : (prefixIconPath != null
               ? Padding(
             padding: effectivePrefixPadding,
@@ -115,20 +126,8 @@ class CustomTextFormField extends StatelessWidget {
             ),
           )
               : null),
-
-          prefixIconConstraints: BoxConstraints(
-            minWidth: 40.w,
-            minHeight: 0,
-          ),
-
+          prefixIconConstraints: BoxConstraints(minWidth: 40.w, minHeight: 0),
           suffixIcon: suffixIcon,
-          suffixText: suffixText,
-          suffixStyle: suffixTextStyle ??
-              GoogleFonts.poppins(
-                fontSize: 12.sp,
-                fontWeight: FontWeight.w400,
-                color: AppColor.primary,
-              ),
 
           hintText: hintText,
           hintStyle: GoogleFonts.poppins(
@@ -137,15 +136,13 @@ class CustomTextFormField extends StatelessWidget {
             color: hintTextColor,
           ),
 
-          contentPadding: EdgeInsets.symmetric(
-            vertical: 12.h,
-            horizontal: 16.w,
-          ),
+          contentPadding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
 
-          // Borders
-          border: border ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
-          enabledBorder: enabledBorder ?? _buildBorder(borderRadius, const Color(0xFFE0E0E0)),
-          focusedBorder: focusedBorder ?? _buildBorder(borderRadius, AppColor.primary),
+          // --- Updated Border Logic ---
+          // Using transparent for border/enabled border makes the shadow pop
+          border: border ?? _buildBorder(borderRadius, Colors.transparent),
+          enabledBorder: enabledBorder ?? _buildBorder(borderRadius, Colors.transparent),
+          focusedBorder: focusedBorder ?? _buildBorder(borderRadius, AppColor.primary.withOpacity(0.5)),
           errorBorder: _buildBorder(borderRadius, AppColor.error),
           focusedErrorBorder: _buildBorder(borderRadius, AppColor.error),
         ),

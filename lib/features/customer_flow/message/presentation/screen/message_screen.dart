@@ -8,6 +8,7 @@ import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/global/custom_text_form_field.dart';
 
 
+import '../../../../../core/utils/app_color.dart';
 import '../../model/message_data_model.dart';
 import '../widget/message_item.dart';
 
@@ -73,27 +74,24 @@ class MessageScreen extends ConsumerWidget {
     final filteredMessages = ref.watch(filteredMessagesProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Prevents keyboard from squishing the curve
       body: Stack(
         children: [
-          // ── Full-screen background image ─────────────────────────────
+          // ── Background image ───────────────────────────────────────
           Positioned.fill(
             child: Image.asset(
-              ImagePath.quoteBackground,
+              ImagePath.roleBackground, // Using consistent background
               fit: BoxFit.cover,
             ),
           ),
 
-          // ── Main column ──────────────────────────────────────────────
           Column(
             children: [
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
               // ── Header ───────────────────────────────────────────────
-              Container(
-                padding: EdgeInsets.only(
-                  top: 50.h,
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 20.h,
-                ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
                 child: Center(
                   child: CustomText(
                     text: 'Message',
@@ -104,70 +102,58 @@ class MessageScreen extends ConsumerWidget {
                 ),
               ),
 
-              // ── White gradient sheet ──────────────────────────────────
-              // ── Main White Sheet ──
+              // ── Curved Content Area ──────────────────────────────────
               Expanded(
                 child: ClipPath(
                   clipper: CurveClipper(),
                   child: Container(
                     width: double.infinity,
-                    // FIX: Use a solid color here so the "Sheet" is visible
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF3FFF0), // Light mint/white background
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.8),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.7, 0.8, 1.0],
+                      ),
                     ),
                     child: Column(
                       children: [
-                        // ── Search bar ──
+                        SizedBox(height: 60.h), // Offset for the curve peak
+
+                        // ── Search bar ────────────────────────────────
                         Padding(
-                          padding: EdgeInsets.fromLTRB(20.w, 68.h, 20.w, 0),
+                          padding: EdgeInsets.symmetric(horizontal: 20.w),
                           child: CustomTextFormField(
                             controller: TextEditingController(),
                             hintText: "Search here...",
-                            borderRadius: 99,
-                            containerColor: const Color(0xFF126A19).withOpacity(0.1),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(99.r),
-                              borderSide: const BorderSide(color: Color(0xFF126A19)),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(99.r),
-                              borderSide: const BorderSide(color: Color(0xFF126A19), width: 1.5),
-                            ),
-                            prefixIconPadding: EdgeInsets.only(left: 14.w, right: 0.w),
-                            prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                            borderRadius: 30.r,
+                            containerColor: Colors.white,
+                            shadowColor: const Color(0xFF055726).withValues(alpha: 0.08),
+                            blurRadius: 10,
+                            prefixIcon: const Icon(Icons.search, color: Color(0xFF9098A1)),
                             onChanged: (value) {
                               ref.read(searchQueryProvider.notifier).state = value;
                             },
                           ),
                         ),
 
-                        SizedBox(height: 16.h),
+                        SizedBox(height: 20.h),
 
-                        // ── Messages list with Fade Effect ──
+                        // ── Messages list ─────────────────────────────
                         Expanded(
-                          child: ShaderMask(
-                            shaderCallback: (Rect bounds) {
-                              return LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  Colors.white,
-                                  Colors.white,
-                                  Colors.transparent // This fades the LIST, not the background
-                                ],
-                                stops: const [0.0, 0.5, 1.0],
-                              ).createShader(bounds);
+                          child: ListView.separated(
+                            padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 100.h),
+                            itemCount: filteredMessages.length,
+                            separatorBuilder: (_, __) => SizedBox(height: 12.h),
+                            itemBuilder: (context, index) {
+                              final message = filteredMessages[index];
+                              return MessageItem(message: message);
                             },
-                            blendMode: BlendMode.dstIn,
-                            child: ListView.separated(
-                              padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 40.h),
-                              itemCount: filteredMessages.length,
-                              separatorBuilder: (_, __) => SizedBox(height: 12.h),
-                              itemBuilder: (context, index) {
-                                final message = filteredMessages[index];
-                                return MessageItem(message: message);
-                              },
-                            ),
                           ),
                         ),
                       ],
