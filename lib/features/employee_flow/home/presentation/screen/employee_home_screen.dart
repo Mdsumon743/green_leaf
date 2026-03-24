@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/features/employee_flow/home/presentation/screen/service_details_screen.dart';
 import '../../../../../core/constants/image_path.dart';
@@ -20,38 +22,42 @@ class EmployeeHomeScreen extends ConsumerWidget {
     final notifier = ref.read(employeeHomeProvider.notifier);
 
     return Scaffold(
-      backgroundColor: AppColor.primary,
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          Container(color: AppColor.primary),
-
-          // Garden photo at bottom
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              height: 180.h,
+          /// 1. TOP BACKGROUND IMAGE
+          Positioned.fill(
+            child: Align(
+              alignment: Alignment.topCenter,
               child: Image.asset(
-                ImagePath.homeBackground,
+                ImagePath.roleBackground,
+                width: double.infinity,
                 fit: BoxFit.cover,
-                alignment: Alignment.bottomCenter,
               ),
             ),
           ),
 
+          /// 2. BOTTOM BACKGROUND IMAGE (Garden)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset(
+              ImagePath.homeBackground,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+
+          /// 3. MAIN UI
           SafeArea(
             bottom: false,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // ── Header ──────────────────────────────────────────────────
                 Padding(
-                  padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 28.h),
+                  padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 20.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Avatar + name
                       Row(
                         children: [
                           CircleAvatar(
@@ -86,53 +92,16 @@ class EmployeeHomeScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
-
-                      // Action icons
                       Row(
                         children: [
-                          // Calendar icon
-                          GestureDetector(
+                          _buildHeaderIcon(
+                            icon: Icons.calendar_month_rounded,
                             onTap: () => _openCalendar(context),
-                            child: Container(
-                              width: 40.r,
-                              height: 40.r,
-                              decoration: BoxDecoration(
-                                color: Colors.transparent,
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.7),
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Center(
-                                child: Icon(
-                                  Icons.calendar_month_rounded,
-                                  color: Colors.white,
-                                  size: 20.r,
-                                ),
-                              ),
-                            ),
                           ),
                           SizedBox(width: 10.w),
-                          // Notification icon
-                          Container(
-                            width: 40.r,
-                            height: 40.r,
-                            decoration: BoxDecoration(
-                              color: Colors.transparent,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.7),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Center(
-                              child: Icon(
-                                Icons.notifications_none_rounded,
-                                color: Colors.white,
-                                size: 22.r,
-                              ),
-                            ),
+                          _buildHeaderIcon(
+                            icon: Icons.notifications_none_rounded,
+                            onTap: () {},
                           ),
                         ],
                       ),
@@ -140,122 +109,106 @@ class EmployeeHomeScreen extends ConsumerWidget {
                   ),
                 ),
 
-                // ── White sheet (tabs + list) ────────────────────────────────
+                // ── Curved White Sheet ──────────────────────────────────────
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F7F3),
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30.r),
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColor.containerBackground,
+                            AppColor.containerBackground,
+                            AppColor.containerBackground.withValues(alpha: 0.8),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.65, 0.8, 1.0],
+                        ),
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        // Tab row
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(30.r),
+                      child: Column(
+                        children: [
+                          // ── TAB DESIGN MATCHING PICTURE ───────────────────
+                          Padding(
+                            padding: EdgeInsets.only(top: 50.h),
+                            child: Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                // Full width bottom border (the light grey line)
+                                Container(
+                                  height: 1.5.h,
+                                  width: MediaQuery.of(context).size.width -40.w,
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                ),
+                                Row(
+                                  children: List.generate(_tabs.length, (i) {
+                                    final active = state.selectedTab == i;
+                                    return Expanded(
+                                      child: GestureDetector(
+                                        onTap: () => notifier.setTab(i),
+                                        child: Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(vertical: 12.h),
+                                              child: CustomText(
+                                                text: _tabs[i],
+                                                fontSize: 15.sp,
+                                                fontWeight: active ? FontWeight.w700 : FontWeight.w500,
+                                                color: active ? AppColor.primary : const Color(0xFF4B5563),
+                                              ),
+                                            ),
+                                            // The active underline indicator
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                              child: AnimatedContainer(
+                                                duration: const Duration(milliseconds: 250),
+                                                height: 2.h,
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  color: active ? AppColor.primary : Colors.transparent,
+                                                  borderRadius: BorderRadius.circular(2.r),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  }),
+                                ),
+                              ],
                             ),
                           ),
-                          child: Row(
-                            children: List.generate(_tabs.length, (i) {
-                              final active = state.selectedTab == i;
-                              return Expanded(
-                                child: GestureDetector(
-                                  onTap: () => notifier.setTab(i),
-                                  behavior: HitTestBehavior.opaque,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 15.h,
-                                        ),
-                                        child: CustomText(
-                                          text: _tabs[i],
-                                          fontSize: 14.sp,
-                                          fontWeight: active
-                                              ? FontWeight.w700
-                                              : FontWeight.w400,
-                                          color: active
-                                              ? AppColor.primary
-                                              : const Color(0xFFAAAAAA),
-                                        ),
-                                      ),
-                                      AnimatedContainer(
-                                        duration: const Duration(
-                                          milliseconds: 220,
-                                        ),
-                                        height: 2.5.h,
-                                        margin: EdgeInsets.symmetric(
-                                          horizontal: 16.w,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: active
-                                              ? AppColor.primary
-                                              : Colors.transparent,
-                                          borderRadius: BorderRadius.circular(
-                                            2.r,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                          ),
-                        ),
 
-                        Divider(
-                          height: 1,
-                          thickness: 1,
-                          color: Colors.grey.withValues(alpha: 0.12),
-                        ),
-
-                        // Cards
-                        Expanded(
-                          child: state.filteredServices.isEmpty
-                              ? Center(
-                                  child: CustomText(
-                                    text:
-                                        'No ${_tabs[state.selectedTab]} services',
-                                    fontSize: 14.sp,
-                                    color: Colors.grey,
-                                  ),
-                                )
-                              : ListView.separated(
-                                  padding: EdgeInsets.fromLTRB(
-                                    16.w,
-                                    18.h,
-                                    16.w,
-                                    40.h,
-                                  ),
-                                  itemCount: state.filteredServices.length,
-                                  separatorBuilder: (_, __) =>
-                                      SizedBox(height: 14.h),
-                                  itemBuilder: (context, index) {
-                                    final service =
-                                        state.filteredServices[index];
-                                    return ServiceCard(
-                                      service: service,
-                                      onViewDetails: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) => ServiceDetailScreen(
-                                              serviceId: service.id,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    );
+                          // Cards List
+                          Expanded(
+                            child: state.filteredServices.isEmpty
+                                ? Center(
+                              child: CustomText(
+                                text: 'No ${_tabs[state.selectedTab]} services',
+                                fontSize: 14.sp,
+                                color: Colors.grey,
+                              ),
+                            )
+                                : ListView.separated(
+                              padding: EdgeInsets.fromLTRB(16.w, 15.h, 16.w, 100.h),
+                              itemCount: state.filteredServices.length,
+                              separatorBuilder: (_, __) => SizedBox(height: 14.h),
+                              itemBuilder: (context, index) {
+                                final service = state.filteredServices[index];
+                                return ServiceCard(
+                                  service: service,
+                                  onViewDetails: () {
+                                    context.push("/serviceDetailScreen/${service.id}");
                                   },
-                                ),
-                        ),
-                      ],
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -267,10 +220,23 @@ class EmployeeHomeScreen extends ConsumerWidget {
     );
   }
 
-  void _openCalendar(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CalendarScreen()),
+  Widget _buildHeaderIcon({required IconData icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 40.r,
+        height: 40.r,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFF126A19),
+          border: Border.all(color: const Color(0xFF188220), width: 1),
+        ),
+        child: Icon(icon, color: Colors.white, size: 20.sp),
+      ),
     );
+  }
+
+  void _openCalendar(BuildContext context) {
+    context.push("/calenderScreen");
   }
 }

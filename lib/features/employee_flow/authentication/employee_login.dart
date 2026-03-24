@@ -206,7 +206,7 @@ class EmployeeLoginScreen extends ConsumerWidget {
                       onPressed: loginState.isLoading
                           ? null
                           : () {
-                        context.push('/customerNav');
+                        context.push('/employeeNavigation');
                         /*loginNotifier.login();*/
                       },
                     ),

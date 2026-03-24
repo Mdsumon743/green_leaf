@@ -64,6 +64,14 @@ class IconPath {
   static const String checkmark = "$_basePath/checkmark-badge-01.png";
 
   static const String filterEdit = "$_basePath/filter-edit.png";
+
+  static const String package1 = "$_basePath/package1.png";
+
+  static const String imageAdd = "$_basePath/image-add-02.png";
+
+  static const String jobSearch = "$_basePath/job-search.png";
+  static const String settings02 = "$_basePath/settings-02.png";
+  static const String agreement02 = "$_basePath/agreement-02.png";
   //end adding by Lisan
 
 }

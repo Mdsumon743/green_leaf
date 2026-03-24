@@ -6,6 +6,8 @@ import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/utils/app_color.dart';
 
+import '../../../../../core/global/curve_clipper.dart';
+
 // ─────────────────────────────────────────────────────────────────────────────
 // MODEL
 // ─────────────────────────────────────────────────────────────────────────────
@@ -66,40 +68,36 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Dummy data for preview – replace with real data from your BLoC/provider
     final details = ref.watch(recurringJobDetailsProvider(job));
 
     return Scaffold(
       body: Stack(
         children: [
-          // ── Background image ─────────────────────────────────────────
-          Positioned.fill(
+          // ── 1. Top Background Image ────────────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 250.h,
+            child: Image.asset(
+              ImagePath.roleBackground, // Using brand role background
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // ── 2. Bottom Garden Background ─────────────────────────────
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Image.asset(
               ImagePath.homeBackground,
-              fit: BoxFit.cover,
+              fit: BoxFit.fitWidth,
               alignment: Alignment.bottomCenter,
             ),
           ),
 
-          // ── Gradient overlay ─────────────────────────────────────────
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xDD1B5E20),
-                    Color(0xAA2E7D32),
-                    Color(0x551B5E20),
-                  ],
-                  stops: [0.0, 0.3, 1.0],
-                ),
-              ),
-            ),
-          ),
-
-          // ── Content ──────────────────────────────────────────────────
+          // ── 3. Content ──────────────────────────────────────────────
           SafeArea(
             bottom: false,
             child: Column(
@@ -145,22 +143,28 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
                   ),
                 ),
 
-                // ── White sheet ───────────────────────────────────────
+                // ── 4. Curved White Sheet ─────────────────────────────
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF3F7F3),
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30.r),
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30.r),
+                  child: ClipPath(
+                    clipper:            CurveClipper(), // Applying your CurveClipper
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColor.containerBackground,
+                            AppColor.containerBackground,
+                            AppColor.containerBackground.withValues(alpha: 0.8),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.6, 0.85, 1.0],
+                        ),
                       ),
                       child: SingleChildScrollView(
-                        padding:
-                        EdgeInsets.fromLTRB(16.w, 24.h, 16.w, 40.h),
+                        // Extra top padding (60.h) to clear the curve peak
+                        padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 40.h),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -214,7 +218,6 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
                             ),
                             _Divider(),
 
-                            // Customer name with avatar
                             _DetailRow(
                               label: 'Customer name',
                               valueWidget: _AvatarName(
@@ -224,7 +227,6 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
                             ),
                             _Divider(),
 
-                            // Job Description (multiline)
                             _DescriptionBlock(
                               label: 'Job Description',
                               text: details.jobDescription,
@@ -242,7 +244,6 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
                             ),
                             _Divider(),
 
-                            // Task Description (multiline)
                             _DescriptionBlock(
                               label: 'Job Description',
                               text: details.taskDescription,
@@ -250,7 +251,6 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
 
                             _Divider(),
 
-                            // Staff name with avatar
                             _DetailRow(
                               label: 'Staff Name',
                               valueWidget: _AvatarName(
@@ -258,7 +258,6 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
                                 assetPath: details.staffAvatar,
                               ),
                             ),
-
                             SizedBox(height: 8.h),
                           ],
                         ),
@@ -274,7 +273,6 @@ class RecurringJobDetailsScreen extends ConsumerWidget {
     );
   }
 }
-
 // ─────────────────────────────────────────────────────────────────────────────
 // REUSABLE WIDGETS
 // ─────────────────────────────────────────────────────────────────────────────

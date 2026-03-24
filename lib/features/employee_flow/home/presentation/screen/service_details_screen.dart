@@ -3,9 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:saunders/core/constants/icon_path.dart';
 import 'package:saunders/features/employee_flow/home/presentation/widget/CustomDivider.dart';
 
 import '../../../../../core/constants/image_path.dart';
+import '../../../../../core/global/curve_clipper.dart';
 import '../../../../../core/global/custom_text.dart';
 import '../../../../../core/utils/app_color.dart';
 import '../../model/service_data_model.dart';
@@ -33,19 +35,29 @@ class ServiceDetailScreen extends ConsumerWidget {
         children: [
           // ── Background ─────────────────────────────────────────────────────
           Positioned(
-            bottom: 0,
+            top: 0,
             left: 0,
             right: 0,
-            child: SizedBox(
-              height: 220.h,
-              child: Image.asset(
-                ImagePath.homeBackground,
-                fit: BoxFit.cover,
-                alignment: Alignment.bottomCenter,
-              ),
+            height: 300.h, // Fixed height for the top section
+            child: Image.asset(
+              ImagePath.notificationTopBG,
+              fit: BoxFit.cover,
             ),
           ),
-          Container(
+
+          /// 2. BOTTOM GARDEN BACKGROUND
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset(
+              ImagePath.homeBackground,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+
+          /// 3. WHITE OVERLAY FOR GARDEN
+          // This ensures the bottom garden is subtle and doesn't distract from text
+          Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               height: 220.h,
@@ -78,199 +90,164 @@ class ServiceDetailScreen extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.all(8.r),
-                        decoration: BoxDecoration(
-                          color: AppColor.primary.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(8.r),
-                        ),
-                        child: Icon(Icons.calendar_today_outlined,
-                            size: 18.r, color: AppColor.primary),
-                      ),
                     ],
                   ),
                 ),
 
-                // ── Scrollable body ──────────────────────────────────────────
+                // ── CurveClipper applied here ────────────────────────────────
                 Expanded(
-                  child: SingleChildScrollView(
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 20.w),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // ── Quote Info Card ──────────────────────────────────
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(16.r),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(14.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.06),
-                                blurRadius: 12,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: CustomText(
-                                  text: 'Quote: ${service.quoteNumber}',
-                                  fontSize: 14.sp,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppColor.black,
-                                ),
-                              ),
-                              Center(
-                                child: CustomText(
-                                  text: service.title,
-                                  fontSize: 12.sp,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              SizedBox(height: 14.h),
-                              DetailRow(
-                                label: 'Total Price',
-                                value:
-                                '€${service.price.toStringAsFixed(2)}',
-                                valueColor: AppColor.primary,
-                                valueBold: true,
-                              ),
-                              CustomDivider(),
-                              DetailRow(
-                                label: 'Prefer Date',
-                                value: service.preferDate,
-                              ),
-                              CustomDivider(),
-                              DetailRowColumn(
-                                label: 'Address',
-                                value: service.address,
-                              ),
-                              CustomDivider(),
-                              DetailRowColumn(
-                                label: 'Job Description',
-                                value: service.jobDescription,
-                              ),
-                              CustomDivider(),
-                              DetailRow(
-                                label: 'Status',
-                                widget: StatusBadge(status: service.status),
-                              ),
-                              CustomDivider(),
-
-                              // ── Before Photos ───────────────────────────────
-                              SizedBox(height: 10.h),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomText(
-                                    text: 'Before Photo',
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColor.black,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () =>
-                                        notifier.addBeforePhoto(service.id),
-                                    child: Container(
-                                      padding: EdgeInsets.all(6.r),
-                                      decoration: BoxDecoration(
-                                        color: AppColor.primary
-                                            .withValues(alpha: 0.1),
-                                        borderRadius:
-                                        BorderRadius.circular(8.r),
-                                      ),
-                                      child: Icon(Icons.add_rounded,
-                                          color: AppColor.primary, size: 18.r),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (service.beforePhotos.isNotEmpty) ...[
-                                SizedBox(height: 8.h),
-                                PhotoRow(photos: service.beforePhotos),
-                              ],
-
-                              SizedBox(height: 14.h),
-
-                              // ── After Photos ────────────────────────────────
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomText(
-                                    text: 'After Photo',
-                                    fontSize: 13.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColor.black,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () =>
-                                        notifier.addAfterPhoto(service.id),
-                                    child: Container(
-                                      padding: EdgeInsets.all(6.r),
-                                      decoration: BoxDecoration(
-                                        color: AppColor.primary
-                                            .withValues(alpha: 0.1),
-                                        borderRadius:
-                                        BorderRadius.circular(8.r),
-                                      ),
-                                      child: Icon(Icons.add_rounded,
-                                          color: AppColor.primary, size: 18.r),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              if (service.afterPhotos.isNotEmpty) ...[
-                                SizedBox(height: 8.h),
-                                PhotoRow(photos: service.afterPhotos),
-                              ],
-
-                              SizedBox(height: 24.h),
-                            ],
-                          ),
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColor.containerBackground,
+                            AppColor.containerBackground,
+                            AppColor.containerBackground.withValues(alpha: 0.75),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.65, 0.8, 1.0],
                         ),
-
-                        SizedBox(height: 24.h),
-
-                        // ── Completed Button (only for pending) ──────────────
-                        if (service.status == ServiceStatus.pending)
-                          GestureDetector(
-                            onTap: () {
-                              notifier.markCompleted(service.id);
-                              Navigator.pop(context);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 52.h,
-                              decoration: BoxDecoration(
-                                color: AppColor.primary,
-                                borderRadius: BorderRadius.circular(12.r),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  CustomText(
-                                    text: 'Completed',
-                                    fontSize: 16.sp,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                      ),
+                      child: SingleChildScrollView(
+                        padding: EdgeInsets.fromLTRB(20.w, 40.h, 20.w, 20.h),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // ── Quote Info Card ──────────────────────────────
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Container(
+                                    padding: EdgeInsets.all(10.r),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.primary.withValues(alpha: 0.1),
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    child: Image.asset(IconPath.appointment02,height: 20.h,width: 20.w,)
                                   ),
-                                  SizedBox(width: 8.w),
-                                  Icon(Icons.arrow_forward_ios_rounded,
-                                      color: Colors.white, size: 16.r),
-                                ],
-                              ),
-                            ),
-                          ),
+                                ),
+                                SizedBox(height: 8.h,),
+                                Center(
+                                  child: CustomText(
+                                    text: 'Quote: ${service.quoteNumber}',
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColor.black,
+                                  ),
+                                ),
+                                SizedBox(height: 4.h,),
+                                Center(
+                                  child: CustomText(
+                                    text: service.title,
+                                    fontSize: 16.sp,
+                                    color: Color(0xFF6B7280),
+                                  ),
+                                ),
+                                SizedBox(height: 24.h),
+                                DetailRow(
+                                  label: 'Total Price',
+                                  value: '€${service.price.toStringAsFixed(2)}',
+                                  valueColor: AppColor.primary,
+                                  valueBold: true,
+                                ),
+                                CustomDivider(),
+                                DetailRow(
+                                  label: 'Prefer Date',
+                                  value: service.preferDate,
+                                ),
+                                CustomDivider(),
+                                DetailRowColumn(
+                                  label: 'Address',
+                                  value: service.address,
+                                ),
+                                CustomDivider(),
+                                DetailRowColumn(
+                                  label: 'Job Description',
+                                  value: service.jobDescription,
+                                ),
+                                CustomDivider(),
+                                DetailRow(
+                                  label: 'Status',
+                                  widget: StatusBadge(status: service.status),
+                                ),
+                                CustomDivider(),
 
-                        SizedBox(height: 32.h),
-                      ],
+                                // ── Photos Sections ────────────────────────
+                                SizedBox(height: 10.h),
+                                _buildPhotoHeader(
+                                  title: 'Before Photo',
+                                  onAdd: () => notifier.addBeforePhoto(service.id),
+                                ),
+                                if (service.beforePhotos.isNotEmpty) ...[
+                                  SizedBox(height: 8.h),
+                                  PhotoRow(photos: service.beforePhotos),
+                                ],
+
+                                SizedBox(height: 14.h),
+
+                                _buildPhotoHeader(
+                                  title: 'After Photo',
+                                  onAdd: () => notifier.addAfterPhoto(service.id),
+                                ),
+                                if (service.afterPhotos.isNotEmpty) ...[
+                                  SizedBox(height: 8.h),
+                                  PhotoRow(photos: service.afterPhotos),
+                                ],
+
+                                SizedBox(height: 24.h),
+                              ],
+                            ),
+
+                            SizedBox(height: 24.h),
+
+                            // ── Completed Button ─────────────────────────────
+                            if (service.status == ServiceStatus.pending)
+                              GestureDetector(
+                                onTap: () {
+                                  notifier.markCompleted(service.id);
+                                  Navigator.pop(context);
+                                },
+                                child: Container(
+                                  width: double.infinity,
+                                  height: 52.h,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Color(0xFF8CC40F),
+                                        Color(0xFF126A19)
+                                      ]
+                                    ),
+                                    borderRadius: BorderRadius.circular(12.r),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CustomText(
+                                        text: 'Completed',
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.white,
+                                      ),
+                                      SizedBox(width: 8.w),
+                                      Icon(Icons.arrow_forward_ios_rounded,
+                                          color: Colors.white, size: 16.r),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                            SizedBox(height: 32.h),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -281,11 +258,23 @@ class ServiceDetailScreen extends ConsumerWidget {
       ),
     );
   }
+
+  // Extracted helper for photo headers to keep the code clean
+  Widget _buildPhotoHeader({required String title, required VoidCallback onAdd}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        CustomText(
+          text: title,
+          fontSize: 13.sp,
+          fontWeight: FontWeight.w500,
+          color: AppColor.black,
+        ),
+        GestureDetector(
+          onTap: onAdd,
+          child: Image.asset(IconPath.imageAdd,height: 32.h,width: 32.w,),
+        ),
+      ],
+    );
+  }
 }
-
-
-
-
-
-
-

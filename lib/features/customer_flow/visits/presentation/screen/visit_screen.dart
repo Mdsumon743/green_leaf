@@ -19,7 +19,7 @@ class VisitScreen extends StatelessWidget {
         'image': ImagePath.visitOne,
         'title': 'Garden Maintenance',
         'date': 'Friday, 16th July, 10:00AM',
-        'address' : '123 Greenview St. Springfield, IL',
+        'address': '123 Greenview St. Springfield, IL',
         'worker': 'Shamim Islam',
         'reminder': 'We\'ll see you soon!',
         'status': 'Pending',
@@ -28,7 +28,7 @@ class VisitScreen extends StatelessWidget {
         'image': ImagePath.visitTwo,
         'title': 'Hedge Trimming',
         'date': 'Friday, 16th July, 10:00AM',
-        'address' : '123 Greenview St. Springfield, IL',
+        'address': '123 Greenview St. Springfield, IL',
         'worker': 'Shamim Islam',
         'reminder': '',
         'status': 'Pending',
@@ -37,7 +37,7 @@ class VisitScreen extends StatelessWidget {
         'image': ImagePath.visitTwo,
         'title': 'Hedge Trimming',
         'date': 'Friday, 16th July, 10:00AM',
-        'address' : '123 Greenview St. Springfield, IL',
+        'address': '123 Greenview St. Springfield, IL',
         'worker': 'Shamim Islam',
         'reminder': '',
         'status': 'Pending ',
@@ -46,70 +46,95 @@ class VisitScreen extends StatelessWidget {
 
     return Scaffold(
       body: Stack(
+        fit: StackFit.expand,
         children: [
-          // ── Full-screen background image ───────────────────────────────
+          /// 1. TOP BACKGROUND IMAGE
           Positioned.fill(
-            child: Image.asset(
-              ImagePath.quoteBackground,
-              fit: BoxFit.cover,
+            child: Align(
+              alignment: Alignment.topCenter,
+              child: Image.asset(
+                ImagePath.roleBackground, // Unified background
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
-          // ── Main column ────────────────────────────────────────────────
+          /// 2. BOTTOM BACKGROUND IMAGE (Garden)
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Image.asset(
+              ImagePath.myQuotesDetailsBottumBG,
+              width: double.infinity,
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+
+          /// 3. MAIN UI
           Column(
             children: [
-              // ── Header ─────────────────────────────────────────────────
-              Container(
-                padding: EdgeInsets.only(
-                  top: 50.h,
-                  left: 20.w,
-                  right: 20.w,
-                  bottom: 20.h,
-                ),
+              SizedBox(height: MediaQuery.of(context).padding.top + 10.h),
+
+              /// AppBar (Centered Title)
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w),
                 child: Row(
                   children: [
                     GestureDetector(
                       onTap: () => context.pop(),
-                      child: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 24.sp,
+                      child: Container(
+                        width: 34.w,
+                        height: 34.h,
+                        alignment: Alignment.center,
+                        child: Icon(Icons.arrow_back, color: Colors.white, size: 24.sp),
                       ),
                     ),
-                    SizedBox(width: 70.w),
+                    const Spacer(),
                     CustomText(
                       text: 'Upcoming Visits',
                       color: Colors.white,
                       fontSize: 20.sp,
                       fontWeight: FontWeight.w600,
                     ),
+                    const Spacer(),
+                    SizedBox(width: 34.w), // Balance for back button
                   ],
                 ),
               ),
 
-              // ── White gradient sheet ────────────────────────────────────
+              SizedBox(height: 25.h),
+
+              /// 4. Curved Content Area
               Expanded(
                 child: ClipPath(
                   clipper: CurveClipper(),
                   child: Container(
                     width: double.infinity,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFF3FFF0), // The light background color from your image
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColor.containerBackground,
+                          AppColor.containerBackground,
+                          AppColor.containerBackground.withValues(alpha: 0.8),
+                          Colors.transparent,
+                        ],
+                        stops: const [0.0, 0.65, 0.8, 1.0],
+                      ),
                     ),
                     child: Column(
                       children: [
-                        // 1. Add the FilterWidget here, inside the clipped area
-                        // Padding top (e.g., 50.h to 60.h) is CRITICAL to push it below the curve dip
+                        /// Filter Widget (Pushed below the curve peak)
                         Padding(
                           padding: EdgeInsets.fromLTRB(20.w, 60.h, 20.w, 10.h),
                           child: FilterWidget(),
                         ),
 
-                        // 2. The List of Cards
+                        /// The List of Cards
                         Expanded(
                           child: ListView.builder(
-                            // Remove top padding here since FilterWidget handles it
-                            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 40.h),
+                            padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 100.h),
                             itemCount: visits.length,
                             itemBuilder: (context, index) {
                               final visit = visits[index];
@@ -140,4 +165,3 @@ class VisitScreen extends StatelessWidget {
     );
   }
 }
-

@@ -21,6 +21,43 @@ class _SystemSettingState extends State<SystemSetting> {
   bool smsNotification = true;
   bool pushNotifications = false;
 
+
+  // core/global/show_custom_dialog.dart
+
+  Future<void> showCustomDialog(
+      BuildContext context, {
+        required String imagePath,
+        required String title,
+        required String message,
+        required String buttonText,
+        Color? buttonColor,
+        Color? buttonTextColor, // Now valid
+        bool isDoubleButton = false,
+        String? secondButtonText,
+        Color? secondButtonColor,
+        Color? secondButtonTextColor, // Now valid
+        required VoidCallback onPressed,
+        VoidCallback? onSecondPressed,
+      }) {
+    return showDialog(
+      context: context,
+      builder: (context) => CustomDialog(
+        imagePath: imagePath,
+        title: title,
+        message: message,
+        buttonText: buttonText,
+        buttonColor: buttonColor,
+        buttonTextColor: buttonTextColor, // Passing to Widget
+        isDoubleButton: isDoubleButton,
+        secondButtonText: secondButtonText,
+        secondButtonColor: secondButtonColor,
+        secondButtonTextColor: secondButtonTextColor, // Passing to Widget
+        onPressed: onPressed,
+        onSecondPressed: onSecondPressed,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -155,11 +192,19 @@ class _SystemSettingState extends State<SystemSetting> {
                                   imagePath: IconPath.confirmation,
                                   title: "Are You Sure?",
                                   message: "Do you want to Delete Account?",
-                                  buttonText: "Delete",
+
+                                  // Cancel Button (The "Primary" button in your code snippet)
+                                  buttonText: "Cancel",
+                                  buttonColor: Colors.transparent,
+                                  buttonTextColor: Colors.black,
                                   isDoubleButton: true,
-                                  secondButtonText: "Cancel",
-                                  onPressed: () {},
-                                  onSecondPressed: () => context.pop(),
+                                  secondButtonText: "Yes, Delete",
+                                  secondButtonColor: const Color(0xFFE53935),
+                                  secondButtonTextColor: Colors.white,
+                                  onPressed: () => context.pop(),
+                                  onSecondPressed: () {
+                                    // Actual Delete logic here
+                                  },
                                 );
                               },
                             ),
@@ -274,6 +319,131 @@ class _SystemSettingState extends State<SystemSetting> {
         padding: EdgeInsets.symmetric(vertical: 14.h),
         decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(12.r)),
         child: Center(child: CustomText(text: text, fontSize: 16.sp, fontWeight: FontWeight.w600, color: textColor)),
+      ),
+    );
+  }
+}
+
+
+class CustomDialog extends StatelessWidget {
+  final String imagePath;
+  final String title;
+  final String message;
+  final String buttonText;
+  final Color? buttonColor;
+  final Color? buttonTextColor; // Added this
+  final bool isDoubleButton;
+  final String? secondButtonText;
+  final Color? secondButtonColor;
+  final Color? secondButtonTextColor; // Added this
+  final VoidCallback onPressed;
+  final VoidCallback? onSecondPressed;
+
+  const CustomDialog({
+    super.key,
+    required this.imagePath,
+    required this.title,
+    required this.message,
+    required this.buttonText,
+    this.buttonColor,
+    this.buttonTextColor, // Added to constructor
+    this.isDoubleButton = false,
+    this.secondButtonText,
+    this.secondButtonColor,
+    this.secondButtonTextColor, // Added to constructor
+    required this.onPressed,
+    this.onSecondPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      child: Padding(
+        padding: EdgeInsets.all(24.r),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(imagePath, width: 80.r, height: 80.r),
+            SizedBox(height: 16.h),
+            CustomText(
+              text: title,
+              fontSize: 20.sp,
+              fontWeight: FontWeight.w700,
+              color: AppColor.black,
+            ),
+            SizedBox(height: 8.h),
+            CustomText(
+              text: message,
+              fontSize: 14.sp,
+              textAlign: TextAlign.center,
+              color: AppColor.textBody.withOpacity(0.7),
+            ),
+            SizedBox(height: 24.h),
+            Row(
+              children: [
+                if (isDoubleButton) ...[
+                  Expanded(
+                    child: _DialogButton(
+                      text: secondButtonText ?? "Cancel",
+                      onTap: onSecondPressed ?? () => Navigator.pop(context),
+                      color: secondButtonColor ?? Colors.grey.shade100,
+                      // Using the new text color variable here:
+                      textColor: secondButtonTextColor ?? AppColor.black,
+                    ),
+                  ),
+                  SizedBox(width: 12.w),
+                ],
+                Expanded(
+                  child: _DialogButton(
+                    text: buttonText,
+                    onTap: onPressed,
+                    color: buttonColor ?? AppColor.primary,
+                    // Using the new text color variable here:
+                    textColor: buttonTextColor ?? Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// Internal helper for Dialog Buttons
+class _DialogButton extends StatelessWidget {
+  final String text;
+  final VoidCallback onTap;
+  final Color color;
+  final Color textColor;
+
+  const _DialogButton({
+    required this.text,
+    required this.onTap,
+    required this.color,
+    required this.textColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 48.h,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        child: Center(
+          child: CustomText(
+            text: text,
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w600,
+            color: textColor,
+          ),
+        ),
       ),
     );
   }

@@ -192,7 +192,7 @@ class _PaymentMethodsScreenState extends State<PaymentMethodsScreen> {
         ),
         child: Row(
           children: [
-            if (icon != null) Icon(icon, size: imageHeight?.sp ?? 28.sp, color: AppColor.primary),
+            if (icon != null) Icon(icon, size: imageHeight?.sp ?? 28.sp,),
             if (imagePath != null)
               Image.asset(
                 imagePath,

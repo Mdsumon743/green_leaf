@@ -48,6 +48,8 @@ import '../features/authentication/presentation/screen/reset_password_screen.dar
 import '../features/customer_flow/home/model/service_model.dart';
 import '../features/customer_flow/home/presentation/widget/service_details_screen.dart';
 import '../features/employee_flow/authentication/allow_location_access.dart';
+import '../features/employee_flow/home/presentation/screen/calender_scren.dart';
+import '../features/employee_flow/home/presentation/screen/service_details_screen.dart';
 import '../features/splash/presentation/screen/splash_screen.dart';
 
 import '../features/splash/provider/splash_state_provider.dart';
@@ -136,6 +138,18 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: "/localTrade", builder: (context, state)=>TrustedLocalTrades()),
       GoRoute(path: "/recurringJob", builder: (context, state)=>RecurringJobScreen()),
       GoRoute(path: "/addRecurringJob", builder: (context, state)=>CreateRecurringJobScreen()),
+
+      //add by Lisan
+      GoRoute(path: "/calenderScreen", builder: (context, state) => CalendarScreen()),
+      GoRoute(
+        path: "/serviceDetailScreen/:serviceId",
+        builder: (context, state) {
+          // Extract the ID from the path parameters
+          final serviceId = state.pathParameters['serviceId']!;
+          return ServiceDetailScreen(serviceId: serviceId);
+        },
+      ),      //end Add by Lisan
+
       GoRoute(
         path: '/recurringJobDetails',
         builder: (context, state) => RecurringJobDetailsScreen(

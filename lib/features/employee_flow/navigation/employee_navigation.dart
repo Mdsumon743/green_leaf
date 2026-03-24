@@ -28,7 +28,6 @@ class EmployeeNavigation extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex = ref.watch(selectedIndexProvider);
 
-    // Different screens for each tab
     final screens = [
       const EmployeeHomeScreen(),
       const InvoiceScreen(),
@@ -38,6 +37,7 @@ class EmployeeNavigation extends ConsumerWidget {
     ];
 
     return Scaffold(
+      extendBody: true,
       body: screens[selectedIndex],
       bottomNavigationBar: const CustomBottomNavBar(),
     );
@@ -52,101 +52,68 @@ class CustomBottomNavBar extends ConsumerWidget {
     final selectedIndex = ref.watch(selectedIndexProvider);
 
     return Container(
+      height: 90.h, // Adjusted height to match reference
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r), // Increased radius for a more prominent curve
+          topRight: Radius.circular(20.r),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 20,
+            offset: const Offset(0, -5),
           ),
         ],
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
       ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
-        ),
-        child: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: (index) {
-            ref.read(selectedIndexProvider.notifier).state = index;
-          },
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          // selectedItemColor: AppColor.primary, // Green color
-          unselectedItemColor: const Color(0xFF9E9E9E), // Gray color
-          selectedFontSize: 12,
-          unselectedFontSize: 12,
-          elevation: 0,
-          items:  [
-            BottomNavigationBarItem(
-              icon: Container(
-                  margin: EdgeInsets.only(bottom: 4.w),
-                  child: SvgPicture.asset(IconPath.home)
-                ///Icon(Icons.home_outlined, size: 24),
-              ),
-              activeIcon: Container(
-                margin: EdgeInsets.only(bottom: 4.w),
-                child: SvgPicture.asset(IconPath.activeHome),
-              ),
-              label: 'Home',
-            ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _buildNavItem(ref, 0, IconPath.home, IconPath.activeHome, 'Home', selectedIndex),
+          _buildNavItem(ref, 1, IconPath.invoice, IconPath.activeInvoice, 'Invoice', selectedIndex),
+          _buildNavItem(ref, 2, IconPath.message, IconPath.activeMessage, 'Message', selectedIndex),
+          _buildNavItem(ref, 3, IconPath.package1, IconPath.activePackage, 'Package', selectedIndex, isImage: true),
+          _buildNavItem(ref, 4, IconPath.profile, IconPath.activeProfile, 'Profile', selectedIndex),
+        ],
+      ),
+    );
+  }
 
-            BottomNavigationBarItem(
-              icon: Container(
-                  margin: EdgeInsets.only(bottom: 4.w),
-                  child: SvgPicture.asset(IconPath.invoice)
-                ///Icon(Icons.home_outlined, size: 24),
-              ),
-              activeIcon: Container(
-                margin: EdgeInsets.only(bottom: 4.w),
-                child: SvgPicture.asset(IconPath.activeInvoice),
-              ),
-              label: 'Invoice',
+  Widget _buildNavItem(
+      WidgetRef ref,
+      int index,
+      String icon,
+      String activeIcon,
+      String label,
+      int currentIndex,
+      {bool isImage = false}
+      ) {
+    final bool isSelected = currentIndex == index;
+
+    return GestureDetector(
+      onTap: () => ref.read(selectedIndexProvider.notifier).state = index,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 24.h,
+            width: 24.w,
+            child: isImage
+                ? Image.asset(icon, color: isSelected ? const Color(0xFF126A19) : const Color(0xFF4B5563))
+                : SvgPicture.asset(isSelected ? activeIcon : icon),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+              color: isSelected ? const Color(0xFF126A19) : const Color(0xFF4B5563),
             ),
-            BottomNavigationBarItem(
-              icon: Container(
-                  margin: EdgeInsets.only(bottom: 4.w),
-                  child: SvgPicture.asset(IconPath.message)
-                ///Icon(Icons.home_outlined, size: 24),
-              ),
-              activeIcon: Container(
-                margin: EdgeInsets.only(bottom: 4.w),
-                child: SvgPicture.asset(IconPath.activeMessage),
-              ),
-              label: 'Message',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(
-                  margin: EdgeInsets.only(bottom: 4.w),
-                  child: SvgPicture.asset(IconPath.package)
-                ///Icon(Icons.home_outlined, size: 24),
-              ),
-              activeIcon: Container(
-                margin: EdgeInsets.only(bottom: 4.w),
-                child: SvgPicture.asset(IconPath.activePackage),
-              ),
-              label: 'Package',
-            ),
-            BottomNavigationBarItem(
-              icon: Container(
-                  margin: EdgeInsets.only(bottom: 4.w),
-                  child: SvgPicture.asset(IconPath.profile)
-                ///Icon(Icons.home_outlined, size: 24),
-              ),
-              activeIcon: Container(
-                margin: EdgeInsets.only(bottom: 4.w),
-                child: SvgPicture.asset(IconPath.activeProfile),
-              ),
-              label: 'Profile',
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

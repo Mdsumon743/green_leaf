@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:saunders/core/constants/image_path.dart';
+import 'package:saunders/core/global/curve_clipper.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/utils/app_color.dart';
 import 'package:saunders/features/employee_flow/profile/presentation/widget/recurring_job_details_screen.dart';
 
-// ── Dummy model – replace with your real model/BLoC ───────────────────────────
+import '../../../../../core/global/custom_button.dart';
+
+// ── Model ──────────────────────────────────────────────────────────────────
 class RecurringJobModel {
   final String serviceName;
   final String address;
   final String customerName;
   final String staffName;
-  final String customerAvatar; // asset path
-  final String staffAvatar; // asset path
+  final String customerAvatar;
+  final String staffAvatar;
 
   const RecurringJobModel({
     required this.serviceName,
@@ -24,8 +27,6 @@ class RecurringJobModel {
     required this.staffAvatar,
   });
 }
-
-// ── Screen ─────────────────────────────────────────────────────────────────────
 
 class RecurringJobScreen extends StatelessWidget {
   const RecurringJobScreen({super.key});
@@ -45,63 +46,50 @@ class RecurringJobScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColor.background,
       body: Stack(
         children: [
-          // ── Full-screen nature background ──────────────────────────────
-          Positioned.fill(
+          // ── 1. Top Background Image ────────────────────────────────
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 250.h,
+            child: Image.asset(
+              ImagePath.roleBackground,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // ── 2. Bottom Background Image (Garden) ────────────────────
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
             child: Image.asset(
               ImagePath.homeBackground,
-              fit: BoxFit.cover,
+              fit: BoxFit.fitWidth,
               alignment: Alignment.bottomCenter,
             ),
           ),
 
-          // ── Gradient overlay – dark green top, fading down ─────────────
-          Positioned.fill(
-            child: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xDD1B5E20),
-                    Color(0xAA2E7D32),
-                    Color(0x551B5E20),
-                  ],
-                  stops: [0.0, 0.3, 1.0],
-                )
-              ),
-            ),
-          ),
-
-          // ── Content ────────────────────────────────────────────────────
+          // ── 3. Content ──────────────────────────────────────────────
           SafeArea(
             bottom: false,
             child: Column(
               children: [
-                // ── App Bar ───────────────────────────────────────────────
+                // ── App Bar ───────────────────────────────────────────
                 Padding(
                   padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
                   child: Row(
                     children: [
                       GestureDetector(
                         onTap: () => context.pop(),
-                        child: Container(
-                          width: 38.r,
-                          height: 38.r,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Center(
-                            child: Icon(
-                              Icons.arrow_back_ios_new_rounded,
-                              color: Colors.white,
-                              size: 18.sp,
-                            ),
+                        child: Center(
+                          child: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            color: Colors.white,
+                            size: 18.sp,
                           ),
                         ),
                       ),
@@ -115,73 +103,65 @@ class RecurringJobScreen extends StatelessWidget {
                           ),
                         ),
                       ),
-                      // Invisible spacer to keep title centred
                       SizedBox(width: 38.r),
                     ],
                   ),
                 ),
 
-                // ── White rounded sheet ───────────────────────────────────
+                // ── 4. Curved White Sheet Container ───────────────────
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: AppColor.containerBackground,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30.r),
-                      ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(30.r),
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColor.containerBackground,
+                            AppColor.containerBackground,
+                            AppColor.containerBackground.withOpacity(0.85),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.6, 0.85, 1.0],
+                        ),
                       ),
                       child: Column(
                         children: [
-                          // ── Scrollable list ──────────────────────────
                           Expanded(
                             child: ListView.separated(
-                              padding: EdgeInsets.fromLTRB(
-                                  16.w, 20.h, 16.w, 20.h),
+                              padding: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 20.h),
                               itemCount: _jobs.length,
-                              separatorBuilder: (_, __) =>
-                                  SizedBox(height: 14.h),
-                              itemBuilder: (context, index) =>
-                                  _RecurringJobCard(job: _jobs[index]),
+                              separatorBuilder: (_, __) => SizedBox(height: 14.h),
+                              itemBuilder: (context, index) => _RecurringJobCard(job: _jobs[index]),
                             ),
                           ),
 
                           // ── Bottom CTA ───────────────────────────────
-                          Container(
-                            padding: EdgeInsets.fromLTRB(
-                                20.w, 12.h, 20.w, 30.h),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF3F7F3),
-                              border: Border(
-                                top: BorderSide(
-                                  color: const Color(0xFFDDE8DD),
-                                  width: 1.h,
-                                ),
+                          // ── Bottom CTA ───────────────────────────────
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 40.h),
+                            child: CustomButton(
+                              onPressed: () => context.push('/addRecurringJob'),
+                              text: 'Add New Recurring Job',
+                              borderWidth: 2,
+                              borderGradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color(0xFF348317),
+                                    Color(0xFF9DC167),
+                                  ]
                               ),
-                            ),
-                            child: SizedBox(
-                              width: double.infinity,
-                              height: 52.h,
-                              child: ElevatedButton(
-                                onPressed: () =>
-                                    context.push('/addRecurringJob'),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColor.primary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.circular(12.r),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: CustomText(
-                                  text: 'Add New Recurring Job',
-                                  color: Colors.white,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                              borderRadius: 8.r,
+                              backgroundGradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Color(0xFF8CC40F),
+                                  Color(0xFF126A19),
+                                ]
                               ),
                             ),
                           ),
@@ -199,142 +179,74 @@ class RecurringJobScreen extends StatelessWidget {
   }
 }
 
-// ── Job Card ───────────────────────────────────────────────────────────────────
+// ── FIXED JOB CARD ───────────────────────────────────────────────────────────
 
 class _RecurringJobCard extends StatelessWidget {
   const _RecurringJobCard({required this.job});
-
   final RecurringJobModel job;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        context.push('/recurringJobDetails', extra: RecurringJobDetailsModel(
-          jobType: 'Garden Cleanup',
-          frequency: 'Weekly',
-          nextOccurrence: '19 March 2026',
-          stopDate: '19 December 2026',
-          startTime: '09:00 AM',
-          finishTime: '01:00 PM',
-          dayOfWeekInMonth: 'Second Thursday',
-          jobName: 'Garden Maintenance',
-          customerName: 'Oliver Leo',
-          customerAvatar: ImagePath.user,
-          jobDescription: 'Regular garden maintenance service...',
-          taskName: 'Garden Maintenance',
-          taskDescription: 'Garden maintenance service including lawn mowing...',
-          staffName: 'Darrell Steward',
-          staffAvatar: ImagePath.user,
-        ));
+      onTap: () {
+        // FIXED: Mapping RecurringJobModel to RecurringJobDetailsModel to resolve the error
+        context.push(
+          '/recurringJobDetails',
+          extra: RecurringJobDetailsModel(
+            jobType: 'Garden Maintenance',
+            frequency: 'Weekly',
+            nextOccurrence: '19 March 2026',
+            stopDate: '19 December 2026',
+            startTime: '09:00 AM',
+            finishTime: '01:00 PM',
+            dayOfWeekInMonth: 'Second Thursday',
+            jobName: job.serviceName,
+            customerName: job.customerName,
+            customerAvatar: job.customerAvatar,
+            jobDescription: 'Regular garden maintenance service including lawn mowing and pruning.',
+            taskName: 'Garden Maintenance',
+            taskDescription: 'Service includes full garden cleanup.',
+            staffName: job.staffName,
+            staffAvatar: job.staffAvatar,
+          ),
+        );
       },
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(16.r),
-          border: Border.all(
-            color: const Color(0xFFDDE8DD),
-            width: 1.w,
-          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withOpacity(0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 16.h),
+        padding: EdgeInsets.all(16.r),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Service name
             CustomText(
               text: job.serviceName,
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
-              color: AppColor.textBody,
+              color: AppColor.black,
             ),
-
-            SizedBox(height: 6.h),
-
-            // Address in green
+            SizedBox(height: 4.h),
             CustomText(
               text: job.address,
               fontSize: 13.sp,
-              fontWeight: FontWeight.w400,
               color: AppColor.primary,
+              fontWeight: FontWeight.w400,
             ),
-
-            SizedBox(height: 14.h),
-
-            // Dashed divider
-            _DashedDivider(),
-
-            SizedBox(height: 14.h),
-
-            // Customer + Staff row
+            SizedBox(height: 12.h),
+            const Divider(color: Color(0xFFE8F0E8)),
+            SizedBox(height: 12.h),
             Row(
               children: [
-                // Customer
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: 'Customer',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColor.textBody.withValues(alpha: 0.55),
-                      ),
-                      SizedBox(height: 8.h),
-                      Row(
-                        children: [
-                          _Avatar(assetPath: job.customerAvatar),
-                          SizedBox(width: 8.w),
-                          Flexible(
-                            child: CustomText(
-                              text: job.customerName,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppColor.textBody,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Staff
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CustomText(
-                        text: 'Staff',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w400,
-                        color: AppColor.textBody.withValues(alpha: 0.55),
-                      ),
-                      SizedBox(height: 8.h),
-                      Row(
-                        children: [
-                          _Avatar(assetPath: job.staffAvatar),
-                          SizedBox(width: 8.w),
-                          Flexible(
-                            child: CustomText(
-                              text: job.staffName,
-                              fontSize: 13.sp,
-                              fontWeight: FontWeight.w600,
-                              color: AppColor.textBody,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
+                Expanded(child: _UserMiniProfile(label: 'Customer', name: job.customerName, avatar: job.customerAvatar)),
+                Expanded(child: _UserMiniProfile(label: 'Staff', name: job.staffName, avatar: job.staffAvatar)),
               ],
             ),
           ],
@@ -344,59 +256,27 @@ class _RecurringJobCard extends StatelessWidget {
   }
 }
 
-// ── Avatar ─────────────────────────────────────────────────────────────────────
-
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.assetPath});
-
-  final String assetPath;
+class _UserMiniProfile extends StatelessWidget {
+  final String label, name, avatar;
+  const _UserMiniProfile({required this.label, required this.name, required this.avatar});
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: 16.r,
-      backgroundColor: const Color(0xFFDDE8DD),
-      child: ClipOval(
-        child: Image.asset(
-          assetPath,
-          width: 32.r,
-          height: 32.r,
-          fit: BoxFit.cover,
-          errorBuilder: (_, __, ___) => Icon(
-            Icons.person,
-            size: 18.r,
-            color: AppColor.primary,
-          ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        CustomText(text: label, fontSize: 11.sp, color: Colors.grey),
+        SizedBox(height: 6.h),
+        Row(
+          children: [
+            CircleAvatar(radius: 14.r, backgroundImage: AssetImage(avatar)),
+            SizedBox(width: 8.w),
+            Flexible(
+              child: CustomText(text: name, fontSize: 13.sp, fontWeight: FontWeight.w600, color: AppColor.black),
+            ),
+          ],
         ),
-      ),
-    );
-  }
-}
-
-// ── Dashed Divider ─────────────────────────────────────────────────────────────
-
-class _DashedDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        const dashWidth = 6.0;
-        const dashSpace = 4.0;
-        final count =
-        (constraints.maxWidth / (dashWidth + dashSpace)).floor();
-        return Row(
-          children: List.generate(count, (_) {
-            return Padding(
-              padding: const EdgeInsets.only(right: dashSpace),
-              child: Container(
-                width: dashWidth,
-                height: 1,
-                color: const Color(0xFFCCDDCC),
-              ),
-            );
-          }),
-        );
-      },
+      ],
     );
   }
 }

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:saunders/core/constants/image_path.dart';
 import 'package:saunders/core/global/custom_text.dart';
 import 'package:saunders/core/utils/app_color.dart';
+
+import '../../../../../core/global/curve_clipper.dart';
 
 // ─── Model ────────────────────────────────────────────────────────────────────
 
@@ -95,7 +98,6 @@ final trustedTradesProvider = StateNotifierProvider<TrustedTradesNotifier, Trust
 );
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
-
 class TrustedLocalTrades extends ConsumerWidget {
   const TrustedLocalTrades({super.key});
 
@@ -104,68 +106,103 @@ class TrustedLocalTrades extends ConsumerWidget {
     final state = ref.watch(trustedTradesProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColor.background,
       body: Stack(
         children: [
-          // Full-screen subtle background pattern
-          Positioned.fill(
-            child: Opacity(
-              opacity: 0.12,
-              child: Image.asset(
-                ImagePath.quoteBackground,
-                fit: BoxFit.cover,
-                alignment: Alignment.topCenter,
-              ),
+          // ── 1. Top Background Image (Role BG) ──────────────────────
+          Positioned(
+            top: 0, left: 0, right: 0, height: 250.h,
+            child: Image.asset(
+              ImagePath.roleBackground,
+              fit: BoxFit.cover,
+            ),
+          ),
+
+          // ── 2. Bottom Background Image (Garden) ────────────────────
+          Positioned(
+            bottom: 0, left: 0, right: 0,
+            child: Image.asset(
+              ImagePath.homeBackground,
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.bottomCenter,
             ),
           ),
 
           SafeArea(
+            bottom: false,
             child: Column(
               children: [
-                // App bar - not wrapped, stays on top
+                // ── App Bar ─────────────────────────────────────────────
                 Padding(
-                  padding: EdgeInsets.fromLTRB(16.w, 12.h, 16.w, 8.h),
+                  padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: () => Navigator.maybePop(context),
-                        icon: Icon(
-                          Icons.arrow_back_rounded,
-                          size: 22.r,
-                          color: AppColor.primary,
+                      GestureDetector(
+                        onTap: () => context.pop(),
+                        child: Container(
+                          width: 38.r,
+                          height: 38.r,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.7),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.arrow_back_ios_new_rounded,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
                         ),
-                        padding: EdgeInsets.zero,
-                        constraints: const BoxConstraints(),
                       ),
-                      SizedBox(width: 12.w),
-                      CustomText(
-                        text: 'Trusted Local Trades',
-                        fontSize: 22.sp,
-                        fontWeight: FontWeight.w700,
-                        color: const Color(0xFF111111),
+                      Expanded(
+                        child: Center(
+                          child: CustomText(
+                            text: 'Trusted Local Trades',
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
                       ),
+                      SizedBox(width: 38.r), // Spacer for centering
                     ],
                   ),
                 ),
 
-                // Only the content list is wrapped in rounded container
+                // ── 3. Curved Sheet Container ─────────────────────────
                 Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(28.r),
+                  child: ClipPath(
+                    clipper: CurveClipper(),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColor.containerBackground,
+                            AppColor.containerBackground,
+                            AppColor.containerBackground.withOpacity(0.85),
+                            Colors.transparent,
+                          ],
+                          stops: const [0.0, 0.6, 0.85, 1.0],
+                        ),
                       ),
-                    ),
-                    child: state.isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : ListView.separated(
-                      padding: EdgeInsets.fromLTRB(16.w, 20.h, 16.w, 40.h),
-                      itemCount: state.trades.length,
-                      separatorBuilder: (_, __) => SizedBox(height: 20.h),
-                      itemBuilder: (context, index) {
-                        return _TradeCard(trade: state.trades[index]);
-                      },
+                      child: state.isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : ListView.separated(
+                        // Added 60.h top padding to clear the curve peak
+                        padding: EdgeInsets.fromLTRB(16.w, 60.h, 16.w, 40.h),
+                        itemCount: state.trades.length,
+                        separatorBuilder: (_, __) => SizedBox(height: 20.h),
+                        itemBuilder: (context, index) {
+                          return _TradeCard(trade: state.trades[index]);
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -178,23 +215,21 @@ class TrustedLocalTrades extends ConsumerWidget {
   }
 }
 
-// ─── Trade Card (image on top) ────────────────────────────────────────────────
+// ── Trade Card (Updated with standard white background) ──────────────────────
 
 class _TradeCard extends StatelessWidget {
   final TradeModel trade;
-
   const _TradeCard({required this.trade});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 4.h), // small breathing room
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
+            color: Colors.black.withOpacity(0.06),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -203,7 +238,6 @@ class _TradeCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Image on top
           ClipRRect(
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             child: Image.asset(
@@ -211,23 +245,8 @@ class _TradeCard extends StatelessWidget {
               width: double.infinity,
               height: 180.h,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: double.infinity,
-                  height: 180.h,
-                  color: AppColor.primary.withValues(alpha: 0.08),
-                  alignment: Alignment.center,
-                  child: Icon(
-                    Icons.image_not_supported_rounded,
-                    color: AppColor.primary.withValues(alpha: 0.5),
-                    size: 48.r,
-                  ),
-                );
-              },
             ),
           ),
-
-          // Text content
           Padding(
             padding: EdgeInsets.all(16.w),
             child: Column(
@@ -235,17 +254,17 @@ class _TradeCard extends StatelessWidget {
               children: [
                 CustomText(
                   text: trade.name,
-                  fontSize: 17.sp,
+                  fontSize: 16.sp,
                   fontWeight: FontWeight.w700,
-                  color: const Color(0xFF1A1A1A),
+                  color: AppColor.black,
                 ),
-                SizedBox(height: 8.h),
+                SizedBox(height: 6.h),
                 CustomText(
                   text: trade.description,
-                  fontSize: 13.5.sp,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w400,
-                  color: const Color(0xFF666666),
-                  height: 1.38,
+                  color: AppColor.textBody.withOpacity(0.7),
+                  height: 1.4,
                 ),
               ],
             ),

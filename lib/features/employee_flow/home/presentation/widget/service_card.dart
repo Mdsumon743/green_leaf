@@ -36,7 +36,7 @@ class ServiceCard extends StatelessWidget {
             children: [
               CustomText(
                 text: service.title,
-                fontSize: 15.sp,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w600,
                 color: AppColor.black,
               ),
@@ -49,12 +49,12 @@ class ServiceCard extends StatelessWidget {
             children: [
               CustomText(
                 text: 'Quote: ${service.quoteNumber}',
-                fontSize: 12.sp,
-                color: Colors.grey,
+                fontSize: 16.sp,
+                color: Color(0xFF4A4E5A),
               ),
               CustomText(
                 text: '€ ${service.price.toStringAsFixed(2)}',
-                fontSize: 16.sp,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.w700,
                 color: AppColor.primary,
               ),
@@ -64,9 +64,16 @@ class ServiceCard extends StatelessWidget {
           GestureDetector(
             onTap: onViewDetails,
             child: Container(
-              height: 40.h,
+              padding: EdgeInsets.symmetric(vertical: 8.h),
               decoration: BoxDecoration(
-                color: AppColor.primary,
+                gradient: LinearGradient(
+                  end: Alignment.topCenter,
+                  begin: Alignment.bottomCenter,
+                  colors: [
+                    Color(0xFF126A19),
+                    Color(0xFF8CC40F),
+                  ]
+                ),
                 borderRadius: BorderRadius.circular(10.r),
               ),
               child: Row(
@@ -74,8 +81,8 @@ class ServiceCard extends StatelessWidget {
                 children: [
                   CustomText(
                     text: 'View Details',
-                    fontSize: 13.sp,
-                    fontWeight: FontWeight.w500,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600,
                     color: Colors.white,
                   ),
                   SizedBox(width: 6.w),
